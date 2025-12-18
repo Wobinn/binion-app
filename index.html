@@ -26,7 +26,7 @@
             --sync-color: #d1d5db;
             --sync-active: #6366f1;
             --dropdown-hover: rgba(99, 102, 241, 0.08);
-            --splash-bg: #fcfdff; /* 스플래시 배경색 (라이트) */
+            --splash-bg: #fcfdff;
         }
 
         [data-theme="dark"] {
@@ -46,31 +46,26 @@
             --sync-color: #374151;
             --sync-active: #818cf8;
             --dropdown-hover: rgba(255, 255, 255, 0.1);
-            --splash-bg: #0f1117; /* 스플래시 배경색 (다크) */
+            --splash-bg: #0f1117;
         }
 
-        /* --- [커스텀 스플래시 화면 스타일] --- */
+        /* 스플래시 화면 */
         #custom-splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--splash-bg); 
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 10000; 
-            transition: opacity 0.5s ease-in-out, visibility 0.5s;
+            z-index: 10000; transition: opacity 0.5s ease-in-out, visibility 0.5s;
         }
         #custom-splash.hidden { opacity: 0; visibility: hidden; }
         .splash-icon {
             width: 120px; height: 120px; margin-bottom: 20px;
             filter: drop-shadow(0 10px 20px rgba(99, 102, 241, 0.2)); 
-            border-radius: 24px; /* JPG는 네모날 수 있어서 둥글게 깎음 */
+            border-radius: 24px;
         }
         .splash-text {
             font-size: 32px; font-weight: 800; letter-spacing: -1px;
-            /* 그라데이션 텍스트 적용 */
-            background: var(--logo-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            background: var(--logo-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        /* ------------------------------------- */
 
         .glass-panel {
             background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
@@ -331,6 +326,8 @@
         </div>
     </div>
 
+    <div id="toast" class="toast">저장되었습니다!</div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, doc, onSnapshot, updateDoc, arrayUnion, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
@@ -356,7 +353,6 @@
         let activeFolder = null;
         let searchTerm = '';
         
-        // 공유 모드 변수
         let shareUrl = "";
         let shareMemo = "";
         let shareCategory = "";
@@ -369,7 +365,7 @@
             else { syncDot.style.background='var(--sync-color)'; syncText.textContent='대기'; }
         }
 
-        // [NEW] 스플래시 화면 숨기기 함수
+        // 스플래시 숨김 처리
         function hideSplash() {
             const splash = document.getElementById('custom-splash');
             if (splash) {
@@ -377,8 +373,7 @@
                 setTimeout(() => { splash.style.display = 'none'; }, 500);
             }
         }
-
-        // 데이터 로딩 완료 감지
+        
         let isFirstLoad = true;
         onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
@@ -390,30 +385,31 @@
                 myData = [];
                 setSync('ok');
             }
-            if (isFirstLoad) {
-                hideSplash();
-                isFirstLoad = false;
-            }
+            if (isFirstLoad) { hideSplash(); isFirstLoad = false; }
         });
-        
-        // 안전장치
         setTimeout(hideSplash, 3000);
 
-
         // ----------------------------------------------------
-        // [AI Logic]
+        // [AI Logic] 수정된 버전 (에러 핸들링 + 공백 제거)
         // ----------------------------------------------------
         window.analyzeContent = async function() {
-            const apiKey = localStorage.getItem('gemini_key');
+            // [수정] 키 가져올 때 혹시 모를 공백 제거
+            let apiKey = localStorage.getItem('gemini_key');
+            if (apiKey) apiKey = apiKey.trim();
+
             if (!apiKey) {
-                alert("먼저 우측 상단 설정(⚙️)에서 API 키를 입력해주세요!"); openKeyPopup();
+                alert("먼저 우측 상단 설정(⚙️)에서 API 키를 입력해주세요!"); 
+                openKeyPopup();
                 return; 
             }
 
             const rawInput = document.getElementById('inp-url').value;
             const currentMemo = document.getElementById('inp-memo').value;
             
-            if (!rawInput.trim() && !currentMemo.trim()) return;
+            if (!rawInput.trim() && !currentMemo.trim()) {
+                alert("분석할 내용이 없습니다!");
+                return;
+            }
 
             const urlRegex = /(https?:\/\/[^\s]+)/;
             const match = rawInput.match(urlRegex);
@@ -443,9 +439,14 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
-                const data = await response.json();
-                if (data.error) return;
 
+                // [수정] 응답 상태 확인
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || "AI 요청 실패");
+                }
+
+                const data = await response.json();
                 const result = JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim());
 
                 if (result.category) {
@@ -457,7 +458,11 @@
                 if (cleanUrl) document.getElementById('inp-url').value = cleanUrl;
                 if (result.summary) document.getElementById('inp-memo').value = result.summary;
 
-            } catch (e) { console.error(e); } finally {
+            } catch (e) { 
+                console.error(e);
+                // [수정] 사용자에게 에러 알림
+                alert("AI 오류: " + e.message + "\n키를 확인하거나 인터넷 연결을 확인하세요.");
+            } finally {
                 document.querySelector('.btn-ai').classList.remove('loading');
             }
         };
@@ -470,32 +475,34 @@
         }
 
         // ----------------------------------------------------
-        // [Key Management & Dropdown]
+        // [Key Management]
         // ----------------------------------------------------
         window.openKeyPopup = function() {
             document.getElementById('key-popup').classList.add('show');
             document.getElementById('key-popup').style.display = 'flex';
             document.getElementById('inp-api-key').value = localStorage.getItem('gemini_key') || '';
         };
+        // [수정] 키 저장 시 공백 제거(trim) 적용
         window.saveApiKey = function() {
-            const key = document.getElementById('inp-api-key').value.trim();
-            if(key) { localStorage.setItem('gemini_key', key); alert("키가 안전하게 저장되었습니다!"); closePopup('key-popup'); }
+            let key = document.getElementById('inp-api-key').value;
+            if(key) {
+                key = key.trim(); // 공백 제거
+                localStorage.setItem('gemini_key', key);
+                alert("키가 안전하게 저장되었습니다!");
+                closePopup('key-popup');
+            }
         };
         window.closePopup = function(id) { document.getElementById(id).classList.remove('show'); setTimeout(()=>document.getElementById(id).style.display='none', 200); };
 
         const setupDropdown = (triggerId, optionsId, inputId, displayId, isShare) => {
             const trg = document.getElementById(triggerId);
             const opts = document.getElementById(optionsId);
-            
             trg.onclick = (e) => { e.stopPropagation(); opts.classList.toggle('open'); };
-            
             opts.querySelectorAll('.custom-option').forEach(o => {
                 o.onclick = () => {
                     const v = o.dataset.value;
                     document.getElementById(displayId).textContent = v;
-                    
                     if(isShare) {
-                        // [핵심 로직] 카테고리 선택 즉시 저장 및 종료
                         shareCategory = v;
                         opts.classList.remove('open');
                         saveFromShareMode(); 
@@ -525,14 +532,9 @@
         };
 
         window.saveFromShareMode = async function() {
-            // 공유 모드: 즉시 저장 후 종료
             const cat = shareCategory || "기타"; 
             await saveToFirebase(cat, shareUrl, shareMemo);
-            
-            // 토스트나 알림 없이 즉시 닫기 시도
             window.close(); 
-            
-            // 혹시 안 닫히면 메인 화면으로 돌아가기
             setTimeout(() => { exitShareMode(); }, 300);
         };
 
@@ -561,7 +563,6 @@
             document.getElementById('share-mode-ui').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             shareUrl = ""; shareMemo = ""; shareCategory = "";
-            // 공유 모드 종료 시에도 스플래시가 보일 수 있으므로 확실히 숨김
             hideSplash();
         }
 
@@ -639,7 +640,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             const p = new URL(window.location.href);
             const t = p.searchParams.get('text'), u = p.searchParams.get('url'), ti = p.searchParams.get('title');
-            
             document.body.setAttribute('data-theme', localStorage.getItem('theme')||'light');
 
             if (u || (t && t.startsWith('http')) || ti) {
@@ -651,10 +651,8 @@
                 shareMemo = ti || (!u && t ? t : "");
                 document.getElementById('share-preview-text').textContent = shareMemo || shareUrl;
 
-                // [중요] URL 파라미터를 즉시 지워서 새로고침 시 다시 공유모드 되는 것 방지
                 window.history.replaceState({}, document.title, window.location.pathname);
-                
-                // AI 실행 안 함 (사용자 요청)
+                // [중요] 공유 모드에서는 AI 구동 안 함
             }
         });
     </script>
