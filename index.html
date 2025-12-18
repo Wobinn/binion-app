@@ -51,6 +51,7 @@
 
         * { -webkit-tap-highlight-color: transparent; outline: none; }
 
+        /* 스플래시 화면 */
         #custom-splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--splash-bg); 
@@ -86,11 +87,7 @@
             color: var(--sync-active); 
             transition: all 0.3s;
         }
-        .icon-btn.syncing {
-            color: var(--sync-color); 
-            transform: rotate(180deg); 
-            opacity: 0.7;
-        }
+        .icon-btn.syncing { color: var(--sync-color); transform: rotate(180deg); opacity: 0.7; }
         .icon-btn:hover { background: var(--glass-bg); transform: scale(1.1); }
         
         .theme-toggle-btn {
@@ -122,6 +119,7 @@
         .input-card { padding: 35px; margin-bottom: 50px; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 50; }
         .input-row { display: flex; gap: 12px; align-items: center; }
         
+        /* 공유 모드 UI */
         #share-mode-ui {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-image); z-index: 9999;
@@ -177,54 +175,58 @@
         .folder-name { font-size: 15px; font-weight: 700; }
         .folder-count { font-size: 12px; color: var(--text-secondary); margin-top: 5px; opacity: 0.8; }
         
-        .scrap-list { display: flex; flex-direction: column; gap: 20px; width:100%; overflow:hidden; }
+        .scrap-list { display: flex; flex-direction: column; gap: 20px; width:100%; }
         
-        /* [수정] 카드 스타일: 회색 박스 제거 및 감도 조절 */
-        .card-wrapper {
-            position: relative; width: 100%; overflow: hidden;
-            border-radius: 24px; box-shadow: var(--glass-shadow);
-            background: transparent; /* 배경 투명으로 수정 */
-        }
+        /* [핵심] 카드 스타일 재정비 (회색 박스 제거 & 터치 효과) */
         .card { 
-            /* 여백 줄이고 꽉 차게 수정 */
-            padding: 25px; display: flex; flex-direction: column; gap: 12px; 
-            transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-            background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            /* 여백 줄이고 깔끔하게 */
+            padding: 22px 25px; 
+            display: flex; flex-direction: column; gap: 10px; 
+            transition: all 0.2s ease; /* 빠른 반응 */
+            background: var(--glass-bg); 
+            backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
             border: 1px solid var(--glass-border); 
             width: 100%; box-sizing: border-box;
-            touch-action: pan-y;
-            position: relative; z-index: 2;
-            user-select: none;
-            border-radius: 24px; /* 카드 자체 둥글게 */
+            border-radius: 24px;
+            position: relative;
+            user-select: none; /* 텍스트 선택 방지 */
         }
-        .card:active { transform: scale(0.98); background: rgba(255,255,255,0.9); }
-        [data-theme="dark"] .card:active { background: rgba(30,30,40,0.9); }
-
-        .swipe-actions {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 30px; box-sizing: border-box; z-index: 1;
-            font-weight: 700; color: white; border-radius: 24px;
+        
+        /* [수정] 터치 시 눌림 효과 + 배경 페이드 */
+        .card:active { 
+            transform: scale(0.97); /* 살짝 꾹 눌림 */
+            background: rgba(99, 102, 241, 0.08); /* 연한 보라색 페이드 */
+            border-color: var(--accent-color);
         }
-        .action-left { opacity: 0; transition: opacity 0.2s; color: #10b981; } 
-        .action-right { opacity: 0; transition: opacity 0.2s; color: #ef4444; }
 
-        .card-header { display: flex; justify-content: space-between; align-items: center; }
+        /* [NEW] 점 3개 메뉴 버튼 스타일 */
+        .card-menu-btn {
+            position: absolute; top: 15px; right: 15px;
+            background: transparent; border: none;
+            color: var(--text-secondary); padding: 8px;
+            cursor: pointer; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 10; /* 카드 내용보다 위에 */
+        }
+        .card-menu-btn:hover, .card-menu-btn:active { background: rgba(0,0,0,0.05); color: var(--text-primary); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: center; padding-right: 30px; /* 메뉴 버튼 공간 확보 */ }
         .category-badge { font-size: 11px; padding: 6px 10px; border-radius: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .cat-ai { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
         .cat-startup { background: rgba(16, 185, 129, 0.1); color: #10b981; }
         .cat-info { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
         .cat-daily { background: rgba(236, 72, 153, 0.1); color: #ec4899; }
         .cat-etc { background: rgba(107, 114, 128, 0.1); color: #6b7280; }
-        .card-date { font-size: 13px; color: var(--text-secondary); }
-        .card-memo { font-size: 17px; font-weight: 700; line-height: 1.4; color: var(--text-primary); pointer-events: none; }
-        .card-url { font-size: 14px; color: var(--accent-color); text-decoration: none; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: 0.9; transition: opacity 0.2s; pointer-events: none; }
-        .card-url:hover { opacity: 1; text-decoration: underline; }
+        .card-date { font-size: 12px; color: var(--text-secondary); }
+        .card-memo { font-size: 16px; font-weight: 700; line-height: 1.4; color: var(--text-primary); pointer-events: none; }
+        .card-url { font-size: 13px; color: var(--accent-color); text-decoration: none; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: 0.8; margin-top: 4px; pointer-events: none; }
+        
         .btn-back { display: inline-flex; align-items: center; gap: 8px; background: transparent; border: none; padding: 10px 0; color: var(--text-secondary); cursor: pointer; font-weight: 600; font-size: 15px; margin-bottom: 20px; }
 
         .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(8px); }
         .popup { padding: 30px; width: 90%; max-width: 340px; text-align: center; transform: scale(0.95); opacity: 0; transition: all 0.2s ease; }
         .overlay.show .popup { transform: scale(1); opacity: 1; }
+        
         .popup input {
             width: 100%; padding: 14px; border: 1px solid var(--glass-border); border-radius: 12px;
             background: rgba(0, 0, 0, 0.03); text-align: center; margin-bottom: 20px;
@@ -237,6 +239,11 @@
         .btn-cancel { background: rgba(0,0,0,0.05); color: var(--text-primary); }
         .btn-delete { background: #ef4444; color: white; }
         .btn-save-key { background: var(--accent-color); color: white; width: 100%; }
+
+        /* [NEW] 액션 선택 팝업 (수정/삭제) */
+        .action-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+        .btn-action-edit { background: var(--accent-gradient); color: white; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 16px; cursor: pointer; }
+        .btn-action-delete { background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 16px; cursor: pointer; }
 
         .toast {
             visibility: hidden; min-width: 250px; background-color: var(--text-primary); color: var(--bg-color);
@@ -339,6 +346,17 @@
         <div id="list-container"></div>
     </div>
 
+    <div id="action-popup" class="overlay">
+        <div class="popup glass-panel">
+            <h3 style="margin-bottom:20px;">작업 선택</h3>
+            <div class="action-btns">
+                <button class="btn-action-edit" id="btn-go-edit">수정하기</button>
+                <button class="btn-action-delete" id="btn-go-delete">삭제하기</button>
+                <button class="btn-cancel" onclick="closePopup('action-popup')" style="margin-top:5px;">취소</button>
+            </div>
+        </div>
+    </div>
+
     <div id="custom-alert" class="overlay">
         <div class="popup glass-panel">
             <h3 id="alert-title">알림</h3>
@@ -401,6 +419,7 @@
         let shareMemo = "";
         let shareCategory = "";
         let editModeId = null; 
+        let currentActionItem = null;
 
         const settingsBtn = document.getElementById('btn-settings');
         function setSync(status) {
@@ -602,6 +621,7 @@
                 if(!finalMemo && url) { finalMemo = url; finalUrl = ""; }
             }
             
+            // [자동삭제] 제목 앞의 (1) 같은 숫자 제거
             if(finalMemo) finalMemo = finalMemo.replace(/^\(\d+\)\s*/, '');
 
             const now = new Date();
@@ -615,7 +635,7 @@
 
         async function updateItemInFirebase(id, cat, url, memo) {
             setSync('loading');
-            if(memo) memo = memo.replace(/^\(\d+\)\s*/, ''); // 수정 시에도 적용
+            if(memo) memo = memo.replace(/^\(\d+\)\s*/, ''); 
             try {
                 const newData = myData.map(item => {
                     if(item.id === id) {
@@ -625,7 +645,7 @@
                 });
                 await updateDoc(docRef, { items: newData });
                 setSync('ok');
-                showCustomAlert("수정되었습니다!", "완료");
+                // 완료 팝업 제거 (조용히 성공)
             } catch (e) { console.error(e); setSync('error'); }
         }
 
@@ -636,6 +656,7 @@
             hideSplash();
         }
 
+        // [핵심] 리스트 렌더링 수정: 스와이프 제거, 점 3개 메뉴 추가
         window.renderList = function() {
             const container = document.getElementById('list-container');
             container.innerHTML = '';
@@ -671,86 +692,50 @@
         function renderItems(list, container) {
             const wrapper = document.createElement('div'); wrapper.className = 'scrap-list';
             list.forEach(item => {
-                const itemWrapper = document.createElement('div');
-                itemWrapper.className = 'card-wrapper';
-                const actions = document.createElement('div');
-                actions.className = 'swipe-actions';
-                actions.innerHTML = `<span class="material-icons-round action-left">edit</span><span class="material-icons-round action-right">delete</span>`;
-                itemWrapper.appendChild(actions);
-
                 const el = document.createElement('div'); el.className = 'card';
                 let cls = 'cat-etc';
                 if(item.category==='AI') cls='cat-ai'; else if(item.category==='창업') cls='cat-startup'; else if(item.category==='정보') cls='cat-info'; else if(item.category==='일상') cls='cat-daily';
-                el.innerHTML = `<div class="card-header"><span class="category-badge ${cls}">${item.category}</span><span class="card-date">${item.date}</span></div><div class="card-memo">${item.memo}</div><a href="${item.url}" target="_blank" class="card-url">${item.url}</a>`;
                 
-                let startX = 0;
-                let currentTranslate = 0;
-                let isDragging = false;
-
-                el.addEventListener('touchstart', (e) => {
-                    startX = e.touches[0].clientX;
-                    isDragging = true;
-                    el.style.transition = 'none';
-                });
-
-                el.addEventListener('touchmove', (e) => {
-                    if (!isDragging) return;
-                    const x = e.touches[0].clientX;
-                    const diff = x - startX;
-                    if (Math.abs(diff) < 10) return; 
-
-                    currentTranslate = diff;
-                    el.style.transform = `translateX(${diff}px)`;
-
-                    const leftIcon = actions.querySelector('.action-left');
-                    const rightIcon = actions.querySelector('.action-right');
-                    
-                    if (diff > 0) { 
-                        leftIcon.style.opacity = Math.min(diff / 100, 1);
-                        rightIcon.style.opacity = 0;
-                        itemWrapper.style.background = `rgba(16, 185, 129, ${Math.min(diff/300, 0.2)})`; 
-                    } else { 
-                        rightIcon.style.opacity = Math.min(Math.abs(diff) / 100, 1);
-                        leftIcon.style.opacity = 0;
-                        itemWrapper.style.background = `rgba(239, 68, 68, ${Math.min(Math.abs(diff)/300, 0.2)})`; 
-                    }
-                });
-
-                el.addEventListener('touchend', () => {
-                    isDragging = false;
-                    el.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
-                    
-                    // [핵심] 감도 조절: 120px 이상 확실히 밀어야 작동
-                    if (currentTranslate > 120) {
-                        triggerEdit(item);
-                        el.style.transform = 'translateX(0)';
-                    } else if (currentTranslate < -120) {
-                        itemToDelete = item; 
-                        document.getElementById('delete-popup').classList.add('show'); 
-                        document.getElementById('delete-popup').style.display='flex';
-                        el.style.transform = 'translateX(0)';
-                    } else {
-                        el.style.transform = 'translateX(0)';
-                    }
-                    
-                    setTimeout(() => {
-                        actions.querySelector('.action-left').style.opacity = 0;
-                        actions.querySelector('.action-right').style.opacity = 0;
-                        itemWrapper.style.background = 'transparent';
-                    }, 300);
-                });
-
+                // 점 3개 메뉴 버튼 추가
+                const menuBtnHtml = `<button class="card-menu-btn" onclick="openActionPopup(${item.id})"><span class="material-icons-round" style="font-size:20px;">more_vert</span></button>`;
+                
+                el.innerHTML = `${menuBtnHtml}<div class="card-header"><span class="category-badge ${cls}">${item.category}</span><span class="card-date">${item.date}</span></div><div class="card-memo">${item.memo}</div><a href="${item.url}" target="_blank" class="card-url">${item.url}</a>`;
+                
+                // 카드 전체 클릭 시 입체감 효과 (CSS :active가 처리하지만, URL 열기 등 필요시 여기서 처리)
                 el.onclick = (e) => {
-                    if (Math.abs(currentTranslate) < 5 && e.target.tagName !== 'A') {
-                        if(item.url) window.open(item.url, '_blank');
+                    // 메뉴 버튼이나 링크가 아닐 때만 반응
+                    if(!e.target.closest('.card-menu-btn') && !e.target.closest('a')) {
+                        // 필요시 여기에 클릭 동작 추가 (예: 상세 보기)
                     }
                 };
 
-                itemWrapper.appendChild(el);
-                wrapper.appendChild(itemWrapper);
+                wrapper.appendChild(el);
             });
             container.appendChild(wrapper);
         }
+
+        // [NEW] 액션 팝업 로직
+        window.openActionPopup = function(id) {
+            currentActionItem = myData.find(i => i.id === id);
+            if(currentActionItem) {
+                document.getElementById('action-popup').classList.add('show');
+                document.getElementById('action-popup').style.display = 'flex';
+            }
+        };
+
+        document.getElementById('btn-go-edit').onclick = function() {
+            closePopup('action-popup');
+            if(currentActionItem) triggerEdit(currentActionItem);
+        };
+
+        document.getElementById('btn-go-delete').onclick = function() {
+            closePopup('action-popup');
+            if(currentActionItem) {
+                itemToDelete = currentActionItem;
+                document.getElementById('delete-popup').classList.add('show');
+                document.getElementById('delete-popup').style.display='flex';
+            }
+        };
 
         function triggerEdit(item) {
             editModeId = item.id;
@@ -764,11 +749,10 @@
             btn.textContent = "수정 완료";
             btn.classList.add('update-mode');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            showCustomAlert("내용을 수정한 뒤 '수정 완료'를 누르세요.", "수정 모드");
+            // 수정 시작 알림 제거 (조용히 모드 전환)
         }
 
         let itemToDelete = null;
-        window.openDeletePopup = function(item) { itemToDelete = item; document.getElementById('delete-popup').classList.add('show'); document.getElementById('delete-popup').style.display='flex'; };
         document.getElementById('confirm-delete-btn').onclick = async function() {
             if(itemToDelete) {
                 const newData = myData.filter(i => i.id !== itemToDelete.id);
