@@ -11,339 +11,173 @@
         :root {
             --font-family: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
             
-            /* --- 라이트 모드 (Pure & Soft Fade) --- */
-            --bg-image: 
-                radial-gradient(circle at 50% 0%, rgba(124, 111, 216, 0.12) 0%, transparent 70%),
-                linear-gradient(180deg, #fcfdff 0%, #f3f4f6 100%);
-            --bg-color: #f8f9fa;
-
-            /* 유리 질감 */
+            /* 라이트 모드 */
+            --bg-image: radial-gradient(circle at 50% 0%, rgba(124, 111, 216, 0.12) 0%, transparent 70%), linear-gradient(180deg, #fcfdff 0%, #f3f4f6 100%);
             --glass-bg: rgba(255, 255, 255, 0.75);
             --glass-border: rgba(255, 255, 255, 0.8);
-            --glass-shadow: 
-                0 10px 30px rgba(0, 0, 0, 0.06),
-                0 4px 6px rgba(0, 0, 0, 0.02),
-                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 4px 6px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.9);
             --glass-blur: blur(15px) saturate(120%);
-
             --text-primary: #1f2937;
             --text-secondary: #6b7280;
             --accent-color: #6366f1;
             --accent-gradient: linear-gradient(135deg, #6366f1, #818cf8);
             --folder-color: #818cf8;
             --logo-gradient: linear-gradient(to right, #6366f1, #a5b4fc);
-
             --toggle-bg: rgba(200, 200, 200, 0.2);
             --toggle-indicator: #ffffff;
-
             --sync-color: #d1d5db;
             --sync-active: #6366f1;
-            
             --dropdown-hover: rgba(99, 102, 241, 0.08);
         }
 
         [data-theme="dark"] {
-            /* --- 다크 모드 (Deep & Calm Fade) --- */
-            --bg-image: 
-                radial-gradient(circle at 50% -20%, rgba(99, 102, 241, 0.15) 0%, transparent 60%),
-                linear-gradient(180deg, #0f1117 0%, #050505 100%);
-            --bg-color: #050505;
-
-            /* 다크 유리 */
+            /* 다크 모드 */
+            --bg-image: radial-gradient(circle at 50% -20%, rgba(99, 102, 241, 0.15) 0%, transparent 60%), linear-gradient(180deg, #0f1117 0%, #050505 100%);
             --glass-bg: rgba(20, 22, 30, 0.7); 
             --glass-border: rgba(255, 255, 255, 0.1); 
-            --glass-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.6),
-                0 8px 16px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 8px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
             --glass-blur: blur(20px) saturate(140%);
-
             --text-primary: #f3f4f6;
             --text-secondary: #9ca3af;
             --accent-color: #818cf8;
             --accent-gradient: linear-gradient(135deg, #818cf8, #6366f1);
             --folder-color: #6366f1;
             --logo-gradient: linear-gradient(to right, #818cf8, #c7d2fe);
-
             --toggle-bg: rgba(255, 255, 255, 0.1);
             --toggle-indicator: #818cf8;
-            
             --sync-color: #374151;
             --sync-active: #818cf8;
-            
             --dropdown-hover: rgba(255, 255, 255, 0.1);
         }
 
-        /* --- 공통 스타일 --- */
+        /* 공통 스타일 */
         .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            border-radius: 24px;
+            background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); border-radius: 24px;
             transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s, background 0.3s;
         }
-        .glass-panel:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.8);
-        }
-        [data-theme="dark"] .glass-panel:hover {
-            box-shadow: 0 30px 60px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.2);
-            background: rgba(30, 35, 50, 0.8);
-        }
-
-        body {
-            margin: 0;
-            background-image: var(--bg-image);
-            background-attachment: fixed;
-            background-size: cover;
-            color: var(--text-primary);
-            font-family: var(--font-family);
-            transition: background 0.5s ease, color 0.5s ease;
-            padding-bottom: 100px;
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        
+        body { margin: 0; background-image: var(--bg-image); background-attachment: fixed; background-size: cover; color: var(--text-primary); font-family: var(--font-family); transition: background 0.5s ease, color 0.5s ease; padding-bottom: 100px; line-height: 1.6; min-height: 100vh; }
         .container { max-width: 860px; margin: 0 auto; padding: 40px 25px; }
-        
-        .header-row {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 40px; gap: 20px;
-        }
-        
-        .logo {
-            font-size: 38px; font-weight: 800; background: var(--logo-gradient);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-decoration: none; letter-spacing: -1.5px;
-        }
+        .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; gap: 15px; }
+        .logo { font-size: 38px; font-weight: 800; background: var(--logo-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; letter-spacing: -1.5px; }
 
-        /* 토글 버튼 */
+        /* 버튼 그룹 (동기화, 설정, 테마) */
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+        .icon-btn {
+            background: var(--toggle-bg); border: 1px solid var(--glass-border); border-radius: 50%; width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-primary); transition: all 0.2s;
+        }
+        .icon-btn:hover { background: var(--glass-bg); transform: scale(1.1); }
+        
         .theme-toggle-btn {
-            background: var(--toggle-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 30px; cursor: pointer;
-            display: flex; align-items: center; padding: 4px;
-            position: relative; width: 64px; height: 34px;
-            backdrop-filter: blur(5px);
+            background: var(--toggle-bg); border: 1px solid var(--glass-border); border-radius: 30px; cursor: pointer;
+            display: flex; align-items: center; padding: 4px; position: relative; width: 64px; height: 34px; backdrop-filter: blur(5px);
         }
         .toggle-indicator {
-            width: 24px; height: 24px; border-radius: 50%;
-            background: var(--toggle-indicator);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: absolute; left: 4px;
+            width: 24px; height: 24px; border-radius: 50%; background: var(--toggle-indicator);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); position: absolute; left: 4px;
         }
         body[data-theme="dark"] .toggle-indicator { transform: translateX(30px); }
         
-        .search-and-status { display: flex; align-items: center; gap: 20px; }
-        .sync-badge {
-            display: flex; align-items: center; gap: 8px;
-            padding: 8px 16px; border-radius: 20px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            font-size: 13px; color: var(--text-secondary); font-weight: 600;
-        }
-        .sync-indicator { width: 8px; height: 8px; border-radius: 50%; background: var(--sync-color); transition: all 0.3s;}
-        .sync-badge[data-status="saving"] .sync-indicator { background: transparent; border: 2px solid var(--sync-active); border-top-color: transparent; animation: spin 1s linear infinite; width: 10px; height: 10px; }
-        .sync-badge[data-status="saved"] .sync-indicator { background: var(--sync-active); box-shadow: 0 0 10px var(--sync-active); }
-        .sync-badge[data-status="offline"] .sync-indicator { background: #ef4444; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* [수정됨] 검색창 스타일: 아이콘 정렬 및 여백 최적화 */
+        /* 검색창 */
         .search-box-container { margin-bottom: 40px; display: flex; justify-content: center; }
         .search-box {
-            display: flex; align-items: center; width: 100%; max-width: 550px;
-            padding: 12px 24px; /* 높이 밸런스 조정 */
-            border-radius: 40px;
+            display: flex; align-items: center; width: 100%; max-width: 550px; padding: 12px 24px; border-radius: 40px;
             background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);
-            transition: all 0.3s;
+            border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); transition: all 0.3s;
         }
-        .search-box:focus-within { 
-            border-color: var(--accent-color); 
-            transform: translateY(-2px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-        .search-box input {
-            border: none; background: transparent; padding: 4px; font-size: 16px;
-            flex: 1; /* 입력창이 남은 공간을 모두 차지하도록 변경 */
-            outline: none; color: var(--text-primary); font-family: var(--font-family);
-        }
-        .search-icon { 
-            color: var(--text-secondary); font-size: 24px; opacity: 0.7; 
-            margin-left: 10px; /* 아이콘과 텍스트 사이 여백 확보 */
-            display: flex; align-items: center; /* 수직 중앙 정렬 보정 */
-        }
+        .search-box:focus-within { border-color: var(--accent-color); transform: translateY(-2px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .search-box input { border: none; background: transparent; padding: 4px; font-size: 16px; flex: 1; outline: none; color: var(--text-primary); font-family: var(--font-family); }
+        .search-icon { color: var(--text-secondary); font-size: 24px; opacity: 0.7; margin-left: 10px; display: flex; align-items: center; }
 
-        /* 탭 */
         .tabs { display: flex; gap: 12px; margin-bottom: 40px; justify-content: center; }
-        .tab-btn {
-            background: transparent; border: 1px solid transparent;
-            padding: 10px 24px; border-radius: 30px; color: var(--text-secondary);
-            cursor: pointer; font-weight: 600; font-size: 15px; transition: all 0.3s;
-        }
-        .tab-btn:hover { color: var(--text-primary); background: rgba(0,0,0,0.03); }
-        [data-theme="dark"] .tab-btn:hover { background: rgba(255,255,255,0.05); }
-        .tab-btn.active {
-            background: var(--accent-gradient); color: #ffffff;
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
-        }
+        .tab-btn { background: transparent; border: 1px solid transparent; padding: 10px 24px; border-radius: 30px; color: var(--text-secondary); cursor: pointer; font-weight: 600; font-size: 15px; transition: all 0.3s; }
+        .tab-btn.active { background: var(--accent-gradient); color: #ffffff; box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3); }
 
-        /* 메인 패널 */
+        /* 입력 카드 */
         .input-card { padding: 35px; margin-bottom: 50px; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 50; }
+        .input-row { display: flex; gap: 12px; align-items: center; }
         
-        .input-row { display: flex; gap: 12px; }
-        
-        /* 커스텀 유리 드롭다운 스타일 */
-        .custom-select-wrapper {
-            position: relative;
-            width: 38%;
-            font-family: var(--font-family);
-        }
+        /* 커스텀 드롭다운 */
+        .custom-select-wrapper { position: relative; width: 35%; min-width: 100px; font-family: var(--font-family); }
         .custom-select-trigger {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 16px 20px;
-            border: 1px solid var(--glass-border); border-radius: 16px;
-            font-size: 15px; background: rgba(0, 0, 0, 0.03); color: var(--text-primary);
-            cursor: pointer; transition: all 0.3s;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-between; align-items: center; padding: 16px 20px;
+            border: 1px solid var(--glass-border); border-radius: 16px; font-size: 15px; background: rgba(0, 0, 0, 0.03); color: var(--text-primary); cursor: pointer; transition: all 0.3s; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
         }
         [data-theme="dark"] .custom-select-trigger { background: rgba(255, 255, 255, 0.05); }
-        .custom-select-trigger:hover { background: rgba(0,0,0,0.05); }
-        [data-theme="dark"] .custom-select-trigger:hover { background: rgba(255,255,255,0.1); }
-        
         .custom-options {
-            position: absolute; top: 110%; left: 0; right: 0;
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-            opacity: 0; visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            z-index: 100;
-            overflow: hidden;
+            position: absolute; top: 110%; left: 0; right: 0; background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s; z-index: 100; overflow: hidden;
         }
-        .custom-options.open {
-            opacity: 1; visibility: visible;
-            transform: translateY(0);
-        }
-        .custom-option {
-            padding: 12px 20px;
-            cursor: pointer;
-            font-size: 15px; font-weight: 500;
-            transition: all 0.2s;
-            border-bottom: 1px solid rgba(0,0,0,0.03);
-        }
-        [data-theme="dark"] .custom-option { border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .custom-option:last-child { border-bottom: none; }
-        .custom-option:hover {
-            background: var(--dropdown-hover);
-            color: var(--accent-color);
-            padding-left: 25px;
-        }
-        .custom-option.selected {
-            background: var(--accent-gradient);
-            color: white;
-        }
-        
-        /* 인풋 스타일 */
+        .custom-options.open { opacity: 1; visibility: visible; transform: translateY(0); }
+        .custom-option { padding: 12px 20px; cursor: pointer; font-size: 15px; font-weight: 500; transition: all 0.2s; border-bottom: 1px solid rgba(0,0,0,0.03); }
+        .custom-option:hover { background: var(--dropdown-hover); color: var(--accent-color); padding-left: 25px; }
+        .custom-option.selected { background: var(--accent-gradient); color: white; }
+
         input[type="text"] {
-            padding: 16px 20px; border: 1px solid var(--glass-border); border-radius: 16px;
-            font-size: 15px; font-family: var(--font-family); box-sizing: border-box; transition: all 0.3s;
-            background: rgba(0, 0, 0, 0.03); color: var(--text-primary);
+            padding: 16px 20px; border: 1px solid var(--glass-border); border-radius: 16px; font-size: 15px; font-family: var(--font-family); box-sizing: border-box; transition: all 0.3s; background: rgba(0, 0, 0, 0.03); color: var(--text-primary); flex: 1;
         }
-        body[data-theme="dark"] input[type="text"] {
-            background: rgba(255, 255, 255, 0.05);
-        }
+        [data-theme="dark"] input[type="text"] { background: rgba(255, 255, 255, 0.05); }
         input:focus { outline: none; border-color: var(--accent-color); background: transparent; }
         
+        .btn-ai {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); color: #fff; border: none; width: 54px; height: 54px; border-radius: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(142, 197, 252, 0.4);
+        }
+        .btn-ai:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(142, 197, 252, 0.6); }
+        .btn-ai.loading { animation: pulse-ai 1.5s infinite; opacity: 0.8; pointer-events: none; }
+        @keyframes pulse-ai { 0% { transform: scale(0.95); } 50% { transform: scale(1.05); } 100% { transform: scale(0.95); } }
+
         .btn-add {
-            background: var(--accent-gradient); color: white; border: none; padding: 18px;
-            border-radius: 16px; font-weight: 700; cursor: pointer; font-size: 16px;
-            margin-top: 10px; transition: all 0.3s;
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
+            background: var(--accent-gradient); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 700; cursor: pointer; font-size: 16px; margin-top: 10px; transition: all 0.3s; box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
         }
         .btn-add:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(99, 102, 241, 0.4); }
-        .btn-add:active { transform: scale(0.98); }
 
-        /* 폴더 & 리스트 */
+        /* 리스트 스타일 */
         .folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; margin-top: 30px; }
         .folder-item { padding: 30px 20px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
         .folder-icon { font-size: 48px; color: var(--folder-color); margin-bottom: 15px; opacity: 0.9; }
         .folder-name { font-size: 15px; font-weight: 700; }
         .folder-count { font-size: 12px; color: var(--text-secondary); margin-top: 5px; opacity: 0.8; }
-
         .scrap-list { display: flex; flex-direction: column; gap: 20px; }
         .card { padding: 25px; display: flex; flex-direction: column; gap: 12px; }
         .card-header { display: flex; justify-content: space-between; align-items: center; }
-        
-        .category-badge {
-            font-size: 11px; padding: 6px 10px; border-radius: 8px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.5px;
-        }
+        .category-badge { font-size: 11px; padding: 6px 10px; border-radius: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .cat-ai { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
         .cat-startup { background: rgba(16, 185, 129, 0.1); color: #10b981; }
         .cat-info { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
         .cat-daily { background: rgba(236, 72, 153, 0.1); color: #ec4899; }
         .cat-etc { background: rgba(107, 114, 128, 0.1); color: #6b7280; }
-        [data-theme="dark"] .cat-ai { background: rgba(99, 102, 241, 0.2); color: #818cf8; }
-        [data-theme="dark"] .cat-startup { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-        [data-theme="dark"] .cat-info { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
-        [data-theme="dark"] .cat-daily { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
-        [data-theme="dark"] .cat-etc { background: rgba(107, 114, 128, 0.2); color: #9ca3af; }
-
         .card-date { font-size: 13px; color: var(--text-secondary); }
         .card-memo { font-size: 17px; font-weight: 700; line-height: 1.4; color: var(--text-primary); }
-        .card-url {
-            font-size: 14px; color: var(--accent-color); text-decoration: none;
-            display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-            opacity: 0.9; transition: opacity 0.2s;
-        }
+        .card-url { font-size: 14px; color: var(--accent-color); text-decoration: none; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: 0.9; transition: opacity 0.2s; }
         .card-url:hover { opacity: 1; text-decoration: underline; }
-
-        .btn-back {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: transparent; border: none;
-            padding: 10px 0; color: var(--text-secondary); cursor: pointer;
-            font-weight: 600; font-size: 15px; margin-bottom: 20px; transition: all 0.2s;
-        }
-        .btn-back:hover { color: var(--text-primary); transform: translateX(-5px); }
+        .btn-back { display: inline-flex; align-items: center; gap: 8px; background: transparent; border: none; padding: 10px 0; color: var(--text-secondary); cursor: pointer; font-weight: 600; font-size: 15px; margin-bottom: 20px; }
 
         /* 팝업 */
-        .overlay {
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; z-index: 1000;
-            backdrop-filter: blur(8px);
-        }
-        .popup { padding: 40px; width: 90%; max-width: 360px; text-align: center; transform: scale(0.95); opacity: 0; transition: all 0.2s ease; }
+        .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(8px); }
+        .popup { padding: 30px; width: 90%; max-width: 340px; text-align: center; transform: scale(0.95); opacity: 0; transition: all 0.2s ease; }
         .overlay.show .popup { transform: scale(1); opacity: 1; }
-        
-        .btn-cancel, .btn-delete {
-            padding: 12px 24px; border-radius: 12px; border: none;
-            font-weight: 700; cursor: pointer; font-size: 15px; transition: all 0.2s;
-        }
+        .popup input { width: 100%; margin: 15px 0; }
+        .btn-cancel, .btn-delete, .btn-save-key { padding: 12px 24px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; font-size: 15px; }
         .btn-cancel { background: rgba(0,0,0,0.05); color: var(--text-primary); }
-        [data-theme="dark"] .btn-cancel { background: rgba(255,255,255,0.1); }
-        .btn-delete { background: #ef4444; color: white; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
-        .btn-delete:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4); }
+        .btn-delete { background: #ef4444; color: white; }
+        .btn-save-key { background: var(--accent-color); color: white; width: 100%; }
 
     </style>
 </head>
 <body>
-
     <div class="container">
         <div class="header-row">
             <a href="#" class="logo">binion</a>
-            <div class="search-and-status">
-                <div id="sync-badge" class="sync-badge" data-status="connecting">
-                    <div class="sync-indicator"></div>
-                    <span id="sync-text">연결 중</span>
+            <div class="header-actions">
+                <div id="sync-badge" class="icon-btn" style="border-radius:20px; width:auto; padding:0 12px; font-size:12px; gap:6px;">
+                    <div style="width:8px; height:8px; background:var(--sync-color); border-radius:50%;" id="sync-dot"></div>
+                    <span id="sync-text">연결</span>
                 </div>
-                <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="테마 변경">
+                <button class="icon-btn" onclick="openKeyPopup()" title="AI 설정">
+                    <span class="material-icons-round">settings</span>
+                </button>
+                <button class="theme-toggle-btn" onclick="toggleTheme()">
                     <span class="toggle-indicator"></span>
                 </button>
             </div>
@@ -377,10 +211,12 @@
                     </div>
                 </div>
                 <input type="hidden" id="inp-category" value="AI">
-                
-                <input type="text" id="inp-url" placeholder="URL 주소" style="flex: 1;">
+                <input type="text" id="inp-url" placeholder="URL 주소">
+                <button class="btn-ai" onclick="analyzeContent()" title="AI로 자동 분석">
+                    <span class="material-icons-round">auto_awesome</span>
+                </button>
             </div>
-            <input type="text" id="inp-memo" placeholder="간단한 메모 입력">
+            <input type="text" id="inp-memo" placeholder="간단한 메모 (AI가 자동으로 채워줍니다)">
             <button class="btn-add" onclick="addItem()">스크랩 저장</button>
         </div>
 
@@ -389,11 +225,24 @@
 
     <div id="delete-popup" class="overlay">
         <div class="popup glass-panel">
-            <h3 style="margin-top:0; font-size:20px;">삭제하시겠습니까?</h3>
-            <p style="color:var(--text-secondary); margin-bottom:30px;">이 작업은 되돌릴 수 없습니다.</p>
-            <div class="popup-btns" style="display:flex; justify-content:center; gap:15px;">
-                <button class="btn-cancel" onclick="closePopup()">취소</button>
+            <h3>삭제하시겠습니까?</h3>
+            <div style="display:flex; justify-content:center; gap:15px; margin-top:20px;">
+                <button class="btn-cancel" onclick="closePopup('delete-popup')">취소</button>
                 <button class="btn-delete" id="confirm-delete-btn">삭제</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="key-popup" class="overlay">
+        <div class="popup glass-panel">
+            <h3>🔑 Gemini API 설정</h3>
+            <p style="font-size:13px; color:var(--text-secondary); margin-bottom:10px;">
+                발급받은 키를 입력하세요.<br>키는 오직 이 기기에만 저장됩니다.
+            </p>
+            <input type="password" id="inp-api-key" placeholder="AIza..." style="text-align:center;">
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button class="btn-cancel" onclick="closePopup('key-popup')" style="flex:1;">닫기</button>
+                <button class="btn-save-key" onclick="saveApiKey()" style="flex:1;">저장</button>
             </div>
         </div>
     </div>
@@ -402,66 +251,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, doc, onSnapshot, updateDoc, arrayUnion, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js');
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const parsedUrl = new URL(window.location.href);
-            const sharedText = parsedUrl.searchParams.get('text');
-            const sharedUrl = parsedUrl.searchParams.get('url');
-            const sharedTitle = parsedUrl.searchParams.get('title');
-
-            if (sharedUrl) document.getElementById('inp-url').value = sharedUrl;
-            else if (sharedText && sharedText.startsWith('http')) document.getElementById('inp-url').value = sharedText;
-            else if (sharedText) document.getElementById('inp-memo').value = sharedText;
-            
-            if (sharedTitle) {
-                const cur = document.getElementById('inp-memo').value;
-                document.getElementById('inp-memo').value = cur ? sharedTitle + " - " + cur : sharedTitle;
-            }
-            
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.body.setAttribute('data-theme', savedTheme);
-
-            // 커스텀 드롭다운 로직
-            const trigger = document.getElementById('category-trigger');
-            const options = document.getElementById('category-options');
-            const hiddenInput = document.getElementById('inp-category');
-            const optionItems = document.querySelectorAll('.custom-option');
-            const selectedText = document.getElementById('selected-value');
-
-            // 1. 클릭하면 열기/닫기
-            trigger.addEventListener('click', (e) => {
-                e.stopPropagation(); // 이벤트 버블링 방지
-                options.classList.toggle('open');
-            });
-
-            // 2. 옵션 선택
-            optionItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    const value = item.getAttribute('data-value');
-                    
-                    // UI 업데이트
-                    selectedText.textContent = value;
-                    hiddenInput.value = value;
-                    
-                    // 선택 스타일 변경
-                    optionItems.forEach(opt => opt.classList.remove('selected'));
-                    item.classList.add('selected');
-                    
-                    // 닫기
-                    options.classList.remove('open');
-                });
-            });
-
-            // 3. 바깥 클릭하면 닫기
-            document.addEventListener('click', (e) => {
-                if (!trigger.contains(e.target) && !options.contains(e.target)) {
-                    options.classList.remove('open');
-                }
-            });
-        });
+        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('service-worker.js'); }
 
         const firebaseConfig = {
             apiKey: "AIzaSyAVL2RCzMSboPTJXsfyYkaMjnKz487vuFE",
@@ -477,58 +267,171 @@
         const db = getFirestore(app);
         const docRef = doc(db, "notion_data", "scrapbook");
         
-        const syncBadge = document.getElementById('sync-badge');
-        const syncText = document.getElementById('sync-text');
-
-        function updateSyncStatus(status, text) {
-            syncBadge.setAttribute('data-status', status);
-            syncText.textContent = text;
-        }
-        
         let myData = [];
         let currentSort = 'time';
         let activeFolder = null;
         let searchTerm = '';
 
+        const syncDot = document.getElementById('sync-dot');
+        const syncText = document.getElementById('sync-text');
+        function setSync(status) {
+            if(status==='ok') { syncDot.style.background='var(--sync-active)'; syncText.textContent='완료'; }
+            else if(status==='loading') { syncDot.style.background='transparent'; syncDot.style.border='2px solid var(--sync-active)'; syncText.textContent='저장중'; }
+            else { syncDot.style.background='var(--sync-color)'; syncText.textContent='대기'; }
+        }
+
         onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
                 myData = docSnap.data().items || [];
                 renderList();
-                updateSyncStatus('saved', '동기화됨');
+                setSync('ok');
             } else {
                 setDoc(docRef, { items: [] });
                 myData = [];
-                updateSyncStatus('saved', '시작하기');
+                setSync('ok');
             }
-        }, (error) => {
-            console.error(error);
-            updateSyncStatus('offline', '오류 발생');
         });
 
-        document.getElementById('inp-search').addEventListener('input', (e) => {
-            searchTerm = e.target.value.toLowerCase();
-            renderList();
-        });
+        // ----------------------------------------------------
+        // [AI Logic] 사용자 입력 키 사용
+        // ----------------------------------------------------
+        window.analyzeContent = async function() {
+            // 저장된 키를 가져옵니다 (코드가 아닌 브라우저 저장소에서!)
+            const apiKey = localStorage.getItem('gemini_key');
+            
+            // 키가 없으면 설정창을 띄웁니다
+            if (!apiKey) { 
+                alert("먼저 우측 상단 설정(⚙️)에서 API 키를 입력해주세요!"); 
+                openKeyPopup(); 
+                return; 
+            }
+
+            const urlInput = document.getElementById('inp-url').value;
+            const memoInput = document.getElementById('inp-memo').value;
+            const content = urlInput + " " + memoInput;
+
+            if (!content.trim()) { alert("분석할 URL이나 내용이 없습니다."); return; }
+
+            const btn = document.querySelector('.btn-ai');
+            btn.classList.add('loading');
+
+            const prompt = `
+                다음 텍스트를 분석해서 JSON 형식으로 답해줘.
+                텍스트: "${content}"
+                
+                요구사항:
+                1. category: [AI, 창업, 정보, 일상, 기타] 중 하나를 선택해.
+                2. summary: 내용을 한 문장으로 핵심만 요약해 (한국어로).
+                3. 형식은 오직 JSON만 반환해: {"category": "...", "summary": "..."}
+            `;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    console.error(data.error);
+                    alert("AI 오류: " + data.error.message + "\n키를 확인해주세요.");
+                    return;
+                }
+
+                const rawText = data.candidates[0].content.parts[0].text;
+                const jsonStr = rawText.replace(/```json|```/g, '').trim();
+                const result = JSON.parse(jsonStr);
+
+                if (result.category) {
+                    document.getElementById('inp-category').value = result.category;
+                    document.getElementById('selected-value').textContent = result.category;
+                    document.querySelectorAll('.custom-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                        if(opt.dataset.value === result.category) opt.classList.add('selected');
+                    });
+                }
+                if (result.summary) {
+                    document.getElementById('inp-memo').value = result.summary;
+                }
+
+            } catch (e) {
+                console.error(e);
+                alert("AI 연결 실패. 잠시 후 다시 시도하세요.");
+            } finally {
+                btn.classList.remove('loading');
+            }
+        };
+
+        // ----------------------------------------------------
+        // [Key Management] 키 저장/불러오기 기능
+        // ----------------------------------------------------
+        window.openKeyPopup = function() {
+            document.getElementById('key-popup').classList.add('show');
+            document.getElementById('key-popup').style.display = 'flex';
+            document.getElementById('inp-api-key').value = localStorage.getItem('gemini_key') || '';
+        };
+        window.saveApiKey = function() {
+            const key = document.getElementById('inp-api-key').value.trim();
+            if(key) {
+                localStorage.setItem('gemini_key', key);
+                alert("키가 안전하게 저장되었습니다!");
+                closePopup('key-popup');
+            }
+        };
+
+        window.closePopup = function(id) { 
+            document.getElementById(id).classList.remove('show'); 
+            setTimeout(()=>document.getElementById(id).style.display='none', 200); 
+        };
+
+        window.addItem = async function() {
+            const category = document.getElementById('inp-category').value;
+            let rawUrlInput = document.getElementById('inp-url').value;
+            let memoInput = document.getElementById('inp-memo').value;
+            
+            if (!rawUrlInput && !memoInput) { alert("내용을 입력하세요."); return; }
+
+            const urlRegex = /(https?:\/\/[^\s]+)/;
+            const match = rawUrlInput.match(urlRegex);
+            let finalUrl = rawUrlInput; 
+            let finalMemo = memoInput;
+
+            if (match) {
+                finalUrl = match[0];
+                if (!finalMemo) {
+                    let extracted = rawUrlInput.replace(finalUrl, '').replace(/- YouTube$|- Instagram$/g, '').trim();
+                    if (extracted) finalMemo = extracted; 
+                }
+            } else {
+                if(!finalMemo && rawUrlInput) { finalMemo = rawUrlInput; finalUrl = ""; }
+            }
+
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}. ${now.getMonth()+1}. ${now.getDate()}`;
+            const newItem = { id: Date.now(), timestamp: Date.now(), category, url: finalUrl, memo: finalMemo, date: dateStr };
+
+            setSync('loading');
+            try {
+                await updateDoc(docRef, { items: arrayUnion(newItem) });
+                document.getElementById('inp-url').value = '';
+                document.getElementById('inp-memo').value = '';
+                setSync('ok');
+            } catch (e) { console.error(e); setSync('error'); }
+        };
 
         window.renderList = function() {
             const container = document.getElementById('list-container');
             container.innerHTML = '';
-
-            let filteredList = myData.filter(item => {
-                const text = (item.memo + item.url + item.category).toLowerCase();
-                return text.includes(searchTerm);
-            });
-
-            if (searchTerm) {
-                renderItems(filteredList, container);
-                return;
-            }
+            let filteredList = myData.filter(item => (item.memo+item.url+item.category).toLowerCase().includes(searchTerm));
+            
+            if (searchTerm) { renderItems(filteredList, container); return; }
 
             if (currentSort === 'time') {
                 activeFolder = null;
                 filteredList.sort((a, b) => b.timestamp - a.timestamp);
                 renderItems(filteredList, container);
-            
             } else if (currentSort === 'category') {
                 if (activeFolder) {
                     const backBtn = document.createElement('button');
@@ -536,154 +439,77 @@
                     backBtn.innerHTML = `<span class="material-icons-round">arrow_back_ios_new</span> ${activeFolder}`;
                     backBtn.onclick = () => { activeFolder = null; renderList(); };
                     container.appendChild(backBtn);
-
-                    const folderItems = filteredList.filter(item => item.category === activeFolder);
-                    folderItems.sort((a, b) => b.timestamp - a.timestamp);
-                    renderItems(folderItems, container);
-
+                    const items = filteredList.filter(item => item.category === activeFolder).sort((a,b)=>b.timestamp-a.timestamp);
+                    renderItems(items, container);
                 } else {
-                    const categories = ['AI', '창업', '정보', '일상', '기타'];
-                    const folderGrid = document.createElement('div');
-                    folderGrid.className = 'folder-grid';
-
-                    categories.forEach(cat => {
-                        const count = filteredList.filter(i => i.category === cat).length;
-                        const folderEl = document.createElement('div');
-                        folderEl.className = 'folder-item glass-panel';
-                        folderEl.innerHTML = `
-                            <span class="material-icons-round folder-icon">folder</span>
-                            <div class="folder-name">${cat}</div>
-                            <div class="folder-count">${count}개</div>
-                        `;
-                        folderEl.onclick = () => { activeFolder = cat; renderList(); };
-                        folderGrid.appendChild(folderEl);
+                    const grid = document.createElement('div'); grid.className = 'folder-grid';
+                    ['AI','창업','정보','일상','기타'].forEach(cat => {
+                        const cnt = filteredList.filter(i => i.category === cat).length;
+                        const el = document.createElement('div'); el.className = 'folder-item glass-panel';
+                        el.innerHTML = `<span class="material-icons-round folder-icon">folder</span><div class="folder-name">${cat}</div><div class="folder-count">${cnt}개</div>`;
+                        el.onclick = () => { activeFolder = cat; renderList(); };
+                        grid.appendChild(el);
                     });
-                    container.appendChild(folderGrid);
+                    container.appendChild(grid);
                 }
             }
         };
 
         function renderItems(list, container) {
-            const listDiv = document.createElement('div');
-            listDiv.className = 'scrap-list';
-            if(list.length === 0) {
-                listDiv.innerHTML = `<div style="text-align:center; color:var(--text-secondary); padding:40px 20px; opacity:0.6;">
-                    <span class="material-icons-round" style="font-size:48px; margin-bottom:15px;">inbox</span><br>
-                    비어있음
-                </div>`;
-            }
+            const wrapper = document.createElement('div'); wrapper.className = 'scrap-list';
+            if(list.length === 0) wrapper.innerHTML = `<div style="text-align:center; opacity:0.6; padding:40px;">비어있음</div>`;
             list.forEach(item => {
-                listDiv.appendChild(createCard(item));
+                const el = document.createElement('div'); el.className = 'card glass-panel';
+                let cls = 'cat-etc';
+                if(item.category==='AI') cls='cat-ai'; else if(item.category==='창업') cls='cat-startup'; else if(item.category==='정보') cls='cat-info'; else if(item.category==='일상') cls='cat-daily';
+                el.innerHTML = `<div class="card-header"><span class="category-badge ${cls}">${item.category}</span><span class="card-date">${item.date}</span></div><div class="card-memo">${item.memo}</div><a href="${item.url}" target="_blank" class="card-url">${item.url}</a>`;
+                let timer;
+                el.onmousedown=el.ontouchstart = () => { timer = setTimeout(() => openDeletePopup(item), 800); };
+                el.onmouseup=el.ontouchend = () => clearTimeout(timer);
+                wrapper.appendChild(el);
             });
-            container.appendChild(listDiv);
+            container.appendChild(wrapper);
         }
-
-        function createCard(item) {
-            const el = document.createElement('div');
-            el.className = 'card glass-panel';
-            let badgeClass = 'cat-etc';
-            if(item.category === 'AI') badgeClass = 'cat-ai';
-            else if(item.category === '창업') badgeClass = 'cat-startup';
-            else if(item.category === '정보') badgeClass = 'cat-info';
-            else if(item.category === '일상') badgeClass = 'cat-daily';
-
-            el.innerHTML = `
-                <div class="card-header">
-                    <span class="category-badge ${badgeClass}">${item.category}</span>
-                    <span class="card-date">${item.date}</span>
-                </div>
-                <div class="card-memo">${item.memo}</div>
-                <a href="${item.url}" target="_blank" class="card-url">${item.url}</a>
-            `;
-            let pressTimer;
-            el.addEventListener('mousedown', () => { pressTimer = setTimeout(() => openDeletePopup(item), 800); });
-            el.addEventListener('mouseup', () => clearTimeout(pressTimer));
-            el.addEventListener('touchstart', () => { pressTimer = setTimeout(() => openDeletePopup(item), 800); });
-            el.addEventListener('touchend', () => clearTimeout(pressTimer));
-            return el;
-        }
-
-        window.addItem = async function() {
-            const category = document.getElementById('inp-category').value;
-            let rawUrlInput = document.getElementById('inp-url').value; 
-            let memoInput = document.getElementById('inp-memo').value;
-            
-            if (!rawUrlInput && !memoInput) { alert("내용을 입력하세요."); return; }
-
-            const urlRegex = /(https?:\/\/[^\s]+)/;
-            const match = rawUrlInput.match(urlRegex);
-
-            let finalUrl = rawUrlInput; 
-            let finalMemo = memoInput;
-
-            if (match) {
-                finalUrl = match[0];
-                if (!finalMemo) {
-                    let extractedTitle = rawUrlInput.replace(finalUrl, '').trim();
-                    extractedTitle = extractedTitle.replace(/- YouTube$/, '').trim(); 
-                    extractedTitle = extractedTitle.replace(/- Instagram$/, '').trim();
-                    if (extractedTitle) finalMemo = extractedTitle; 
-                }
-            } else {
-                if(!finalMemo && rawUrlInput) {
-                    finalMemo = rawUrlInput;
-                    finalUrl = ""; 
-                }
-            }
-
-            const now = new Date();
-            const dateStr = `${now.getFullYear()}. ${now.getMonth()+1}. ${now.getDate()}`;
-            const newItem = { 
-                id: Date.now(), 
-                timestamp: Date.now(), 
-                category, 
-                url: finalUrl, 
-                memo: finalMemo, 
-                date: dateStr 
-            };
-
-            updateSyncStatus('saving', '저장 중...');
-            try {
-                await updateDoc(docRef, { items: arrayUnion(newItem) });
-                document.getElementById('inp-url').value = '';
-                document.getElementById('inp-memo').value = '';
-                updateSyncStatus('saved', '완료');
-                setTimeout(() => { updateSyncStatus('saved', '동기화됨'); }, 2000);
-            } catch (e) { alert("실패"); console.error(e); updateSyncStatus('offline', '오류'); }
-        };
 
         let itemToDelete = null;
-        window.openDeletePopup = function(item) { 
-            itemToDelete = item; 
-            document.getElementById('delete-popup').classList.add('show');
-            document.getElementById('delete-popup').style.display = 'flex'; 
-        };
-        window.closePopup = function() { 
-            document.getElementById('delete-popup').classList.remove('show');
-            setTimeout(() => { document.getElementById('delete-popup').style.display = 'none'; }, 200);
-            itemToDelete = null; 
-        };
+        window.openDeletePopup = function(item) { itemToDelete = item; document.getElementById('delete-popup').classList.add('show'); document.getElementById('delete-popup').style.display='flex'; };
         document.getElementById('confirm-delete-btn').onclick = async function() {
-            if (!itemToDelete) return;
-            const newData = myData.filter(i => i.id !== itemToDelete.id);
-            await updateDoc(docRef, { items: newData });
-            closePopup();
+            if(itemToDelete) {
+                const newData = myData.filter(i => i.id !== itemToDelete.id);
+                await updateDoc(docRef, { items: newData });
+                closePopup('delete-popup');
+            }
         };
 
-        window.setSort = function(type) {
-            currentSort = type;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            if(type === 'time') document.getElementById('btn-recent').classList.add('active');
-            else document.getElementById('btn-category').classList.add('active');
-            renderList();
+        document.getElementById('inp-search').addEventListener('input', (e) => { searchTerm = e.target.value.toLowerCase(); renderList(); });
+        window.setSort = function(type) { currentSort = type; document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); if(type==='time') document.getElementById('btn-recent').classList.add('active'); else document.getElementById('btn-category').classList.add('active'); renderList(); };
+        window.toggleTheme = function() { 
+            const n = document.body.getAttribute('data-theme')==='dark'?'light':'dark';
+            document.body.setAttribute('data-theme', n); localStorage.setItem('theme', n);
         };
-
-        window.toggleTheme = function() {
-            const body = document.body;
-            const newTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        };
+        
+        const trg = document.getElementById('category-trigger'), opts = document.getElementById('category-options');
+        trg.onclick = (e) => { e.stopPropagation(); opts.classList.toggle('open'); };
+        document.querySelectorAll('.custom-option').forEach(o => {
+            o.onclick = () => {
+                const v = o.dataset.value;
+                document.getElementById('selected-value').textContent = v;
+                document.getElementById('inp-category').value = v;
+                document.querySelectorAll('.custom-option').forEach(i=>i.classList.remove('selected'));
+                o.classList.add('selected'); opts.classList.remove('open');
+            };
+        });
+        document.onclick = (e) => { if(!trg.contains(e.target) && !opts.contains(e.target)) opts.classList.remove('open'); };
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const p = new URL(window.location.href);
+            const t = p.searchParams.get('text'), u = p.searchParams.get('url'), ti = p.searchParams.get('title');
+            if(u) document.getElementById('inp-url').value = u;
+            else if(t && t.startsWith('http')) document.getElementById('inp-url').value = t;
+            else if(t) document.getElementById('inp-memo').value = t;
+            if(ti) { const c = document.getElementById('inp-memo').value; document.getElementById('inp-memo').value = c ? ti+" - "+c : ti; }
+            document.body.setAttribute('data-theme', localStorage.getItem('theme')||'light');
+        });
     </script>
 </body>
 </html>
