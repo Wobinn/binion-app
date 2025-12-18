@@ -1,7 +1,7 @@
 {
   "name": "binion",
   "short_name": "binion",
-  "start_url": ".",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#fcfdff",
   "theme_color": "#fcfdff",
@@ -11,5 +11,14 @@
       "sizes": "512x512",
       "type": "image/jpeg"
     }
-  ]
+  ],
+  "share_target": {
+    "action": "./index.html",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
 }
