@@ -105,7 +105,8 @@
         }
         body[data-theme="dark"] .toggle-indicator { transform: translateX(30px); }
         
-        .main-ui { transition: opacity 0.3s; }
+        /* [중요] 기본적으로 공유 UI는 숨기고 메인을 표시 (안전장치) */
+        .main-ui { opacity: 1; transition: opacity 0.3s; display: block; }
         
         .search-box-container { margin-bottom: 40px; display: flex; justify-content: center; }
         .search-box {
@@ -124,8 +125,10 @@
         .input-card { padding: 35px; margin-bottom: 50px; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 50; }
         .input-row { display: flex; gap: 12px; align-items: center; }
         
+        /* 공유 모드 UI */
         #share-mode-ui {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; /* JS로 제어 */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-image); z-index: 9999;
             flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
         }
@@ -262,7 +265,6 @@
             .search-box-container { margin-bottom: 30px; }
             .search-box { padding: 10px 20px; }
             
-            /* [핵심] 모바일 폴더 리스트형 변환 */
             .folder-grid { display: flex; flex-direction: column; gap: 12px; }
             .folder-item { flex-direction: row; align-items: center; padding: 18px 24px; text-align: left; justify-content: flex-start; }
             .folder-icon { margin-bottom: 0; margin-right: 18px; font-size: 32px; }
@@ -457,28 +459,39 @@
         });
         setTimeout(hideSplash, 3000);
 
-        // [중요] 초기 로드 시 공유 데이터 처리 및 URL 클린업
+        // [핵심 해결 로직] 흰색 화면 방지 및 URL 초기화
         document.addEventListener('DOMContentLoaded', () => {
             const p = new URL(window.location.href);
-            // 공유 데이터 확인
+            // 공유 데이터 파싱
             const t = p.searchParams.get('text');
             const u = p.searchParams.get('url');
             const ti = p.searchParams.get('title');
             
             document.body.setAttribute('data-theme', localStorage.getItem('theme')||'light');
 
-            if (u || (t && t.startsWith('http')) || ti) {
-                // 1. 공유 데이터 저장
+            // [조건 강화] 공유 데이터가 '확실히' 있을 때만 공유 모드 진입
+            if (u || (t && t.startsWith('http')) || (ti && t)) {
+                
                 shareUrl = u || (t && t.startsWith('http') ? t : "");
                 shareMemo = ti || (!u && t ? t : "");
                 
-                // 2. UI 전환 (메인 숨김, 공유 UI 표시)
-                document.getElementById('main-app').style.display = 'none';
-                document.getElementById('share-mode-ui').style.display = 'flex';
-                document.getElementById('share-preview-text').textContent = shareMemo || shareUrl;
+                // 데이터가 유효하면 공유 UI 보여줌
+                if(shareUrl || shareMemo) {
+                    document.getElementById('main-app').style.display = 'none';
+                    document.getElementById('share-mode-ui').style.display = 'flex';
+                    document.getElementById('share-preview-text').textContent = shareMemo || shareUrl;
+                } else {
+                    // 데이터가 이상하면 그냥 메인 앱 보여줌 (흰색 화면 방지)
+                    document.getElementById('main-app').style.display = 'block';
+                    document.getElementById('share-mode-ui').style.display = 'none';
+                }
 
-                // 3. [핵심] URL 즉시 청소 (새로고침 시 재실행 방지)
+                // [중요] 즉시 URL 세탁 (나갔다 들어와도 재실행 안 되게)
                 window.history.replaceState({}, document.title, window.location.pathname);
+            } else {
+                // 공유 아닐 땐 무조건 메인
+                document.getElementById('main-app').style.display = 'block';
+                document.getElementById('share-mode-ui').style.display = 'none';
             }
         });
 
@@ -634,10 +647,16 @@
             const cat = shareCategory || "기타"; 
             await saveToFirebase(cat, shareUrl, shareMemo);
             
-            // [핵심] 공유 저장 후 '뒤로가기' 대신 '종료' 또는 '메인 화면'으로 전환
-            // window.close()가 실패할 경우를 대비해 메인 화면 복귀를 강제함
-            window.close(); 
-            setTimeout(() => { exitShareMode(); }, 100);
+            // [핵심] 1. 창 닫기 시도 (팝업인 경우)
+            window.close();
+            
+            // [핵심] 2. 뒤로 가기 시도 (안드로이드 액티비티 종료 유도)
+            if (window.history.length > 1) {
+                window.history.back();
+            }
+            
+            // [핵심] 3. 안전장치: 그래도 안 닫히면 메인 화면으로 전환해서 갇힘 방지
+            setTimeout(() => { exitShareMode(); }, 200);
         };
 
         async function saveToFirebase(cat, url, memo) {
@@ -697,17 +716,13 @@
                 renderItems(filteredList, container);
             } else if (currentSort === 'category') {
                 if (activeFolder) {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'scrap-list animate-enter';
                     const backBtn = document.createElement('button');
                     backBtn.className = 'btn-back';
                     backBtn.innerHTML = `<span class="material-icons-round">arrow_back_ios_new</span> ${activeFolder}`;
                     backBtn.onclick = () => { activeFolder = null; renderList(); };
                     container.appendChild(backBtn);
                     const items = filteredList.filter(item => item.category === activeFolder).sort((a,b)=>b.timestamp-a.timestamp);
-                    items.forEach(item => wrapper.appendChild(createCardElement(item)));
-                    if(items.length === 0) wrapper.innerHTML = `<div style="text-align:center; opacity:0.6; padding:40px;">비어있음</div>`;
-                    container.appendChild(wrapper);
+                    renderItems(items, container);
                 } else {
                     const grid = document.createElement('div'); grid.className = 'folder-grid animate-enter';
                     ['AI','창업','정보','일상','기타'].forEach(cat => {
@@ -728,28 +743,25 @@
             }
         };
 
-        function createCardElement(item) {
-            const el = document.createElement('div'); el.className = 'card';
-            let cls = 'cat-etc';
-            if(item.category==='AI') cls='cat-ai'; else if(item.category==='창업') cls='cat-startup'; else if(item.category==='정보') cls='cat-info'; else if(item.category==='일상') cls='cat-daily';
-            
-            const menuBtnHtml = `<button class="card-menu-btn" onclick="openActionPopup(${item.id})"><span class="material-icons-round" style="font-size:20px;">more_vert</span></button>`;
-            
-            el.innerHTML = `${menuBtnHtml}<div class="card-header"><span class="category-badge ${cls}">${item.category}</span><span class="card-date">${item.date}</span></div><div class="card-memo">${item.memo}</div><a href="${item.url}" target="_blank" class="card-url">${item.url}</a>`;
-            
-            el.onclick = (e) => {
-                if(!e.target.closest('.card-menu-btn') && !e.target.closest('a')) {
-                    // 카드 자체 클릭 시 액션 (필요하면 추가)
-                }
-            };
-            return el;
-        }
-
         function renderItems(list, container) {
             const wrapper = document.createElement('div'); wrapper.className = 'scrap-list animate-enter';
             if(list.length === 0) wrapper.innerHTML = `<div style="text-align:center; opacity:0.6; padding:40px;">비어있음</div>`;
             list.forEach(item => {
-                wrapper.appendChild(createCardElement(item));
+                const el = document.createElement('div'); el.className = 'card';
+                let cls = 'cat-etc';
+                if(item.category==='AI') cls='cat-ai'; else if(item.category==='창업') cls='cat-startup'; else if(item.category==='정보') cls='cat-info'; else if(item.category==='일상') cls='cat-daily';
+                
+                const menuBtnHtml = `<button class="card-menu-btn" onclick="openActionPopup(${item.id})"><span class="material-icons-round" style="font-size:20px;">more_vert</span></button>`;
+                
+                el.innerHTML = `${menuBtnHtml}<div class="card-header"><span class="category-badge ${cls}">${item.category}</span><span class="card-date">${item.date}</span></div><div class="card-memo">${item.memo}</div><a href="${item.url}" target="_blank" class="card-url">${item.url}</a>`;
+                
+                el.onclick = (e) => {
+                    if(!e.target.closest('.card-menu-btn') && !e.target.closest('a')) {
+                        // 필요 시 상세 보기
+                    }
+                };
+
+                wrapper.appendChild(el);
             });
             container.appendChild(wrapper);
         }
