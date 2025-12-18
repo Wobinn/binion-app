@@ -26,6 +26,7 @@
             --sync-color: #d1d5db;
             --sync-active: #6366f1;
             --dropdown-hover: rgba(99, 102, 241, 0.08);
+            --splash-bg: #fcfdff; /* 스플래시 배경색 (라이트) */
         }
 
         [data-theme="dark"] {
@@ -45,7 +46,31 @@
             --sync-color: #374151;
             --sync-active: #818cf8;
             --dropdown-hover: rgba(255, 255, 255, 0.1);
+            --splash-bg: #0f1117; /* 스플래시 배경색 (다크) */
         }
+
+        /* --- [커스텀 스플래시 화면 스타일] --- */
+        #custom-splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--splash-bg); 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 10000; 
+            transition: opacity 0.5s ease-in-out, visibility 0.5s;
+        }
+        #custom-splash.hidden { opacity: 0; visibility: hidden; }
+        .splash-icon {
+            width: 120px; height: 120px; margin-bottom: 20px;
+            filter: drop-shadow(0 10px 20px rgba(99, 102, 241, 0.2)); 
+            border-radius: 24px; /* JPG는 네모날 수 있어서 둥글게 깎음 */
+        }
+        .splash-text {
+            font-size: 32px; font-weight: 800; letter-spacing: -1px;
+            /* 그라데이션 텍스트 적용 */
+            background: var(--logo-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* ------------------------------------- */
 
         .glass-panel {
             background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
@@ -102,7 +127,7 @@
         }
         .share-card {
             width: 100%; max-width: 360px; padding: 40px; text-align: center;
-            display: flex; flex-direction: column; gap: 30px; /* 간격 조정 */
+            display: flex; flex-direction: column; gap: 30px;
         }
         .share-title { font-size: 28px; font-weight: 800; margin: 0; background: var(--logo-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .share-question { font-size: 17px; font-weight: 600; color: var(--text-primary); margin: 0; opacity: 0.9; }
@@ -186,9 +211,23 @@
         .btn-delete { background: #ef4444; color: white; }
         .btn-save-key { background: var(--accent-color); color: white; width: 100%; }
 
+        /* 토스트 메시지 스타일 */
+        .toast {
+            visibility: hidden; min-width: 250px; background-color: var(--text-primary); color: var(--bg-color);
+            text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 10000;
+            left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 15px; font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.3s, bottom 0.3s;
+        }
+        .toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+
     </style>
 </head>
 <body>
+    <div id="custom-splash">
+        <img src="icon-512.jpg" alt="Binion Logo" class="splash-icon">
+        <div class="splash-text">binion</div>
+    </div>
+
     <div id="share-mode-ui">
         <div class="share-card glass-panel">
             <h1 class="share-title">Binion</h1>
@@ -330,6 +369,17 @@
             else { syncDot.style.background='var(--sync-color)'; syncText.textContent='대기'; }
         }
 
+        // [NEW] 스플래시 화면 숨기기 함수
+        function hideSplash() {
+            const splash = document.getElementById('custom-splash');
+            if (splash) {
+                splash.classList.add('hidden');
+                setTimeout(() => { splash.style.display = 'none'; }, 500);
+            }
+        }
+
+        // 데이터 로딩 완료 감지
+        let isFirstLoad = true;
         onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
                 myData = docSnap.data().items || [];
@@ -340,10 +390,18 @@
                 myData = [];
                 setSync('ok');
             }
+            if (isFirstLoad) {
+                hideSplash();
+                isFirstLoad = false;
+            }
         });
+        
+        // 안전장치
+        setTimeout(hideSplash, 3000);
+
 
         // ----------------------------------------------------
-        // [AI Logic] (공유 모드에선 사용 안 함)
+        // [AI Logic]
         // ----------------------------------------------------
         window.analyzeContent = async function() {
             const apiKey = localStorage.getItem('gemini_key');
@@ -472,7 +530,6 @@
             await saveToFirebase(cat, shareUrl, shareMemo);
             
             // 토스트나 알림 없이 즉시 닫기 시도
-            // (브라우저 정책에 따라 window.close()가 제한될 수 있으나 PWA에서는 일반적으로 작동함)
             window.close(); 
             
             // 혹시 안 닫히면 메인 화면으로 돌아가기
@@ -504,10 +561,12 @@
             document.getElementById('share-mode-ui').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             shareUrl = ""; shareMemo = ""; shareCategory = "";
+            // 공유 모드 종료 시에도 스플래시가 보일 수 있으므로 확실히 숨김
+            hideSplash();
         }
 
         // ----------------------------------------------------
-        // [List Rendering & Delete]
+        // [List Rendering]
         // ----------------------------------------------------
         window.renderList = function() {
             const container = document.getElementById('list-container');
