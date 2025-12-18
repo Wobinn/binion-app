@@ -51,7 +51,17 @@
 
         * { -webkit-tap-highlight-color: transparent; outline: none; }
 
-        /* 스플래시 화면 */
+        /* [NEW] 부드러운 화면 전환 애니메이션 정의 */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        /* 이 클래스가 붙으면 애니메이션 실행 */
+        .animate-enter {
+            animation: fadeInUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
         #custom-splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--splash-bg); 
@@ -177,40 +187,26 @@
         
         .scrap-list { display: flex; flex-direction: column; gap: 20px; width:100%; }
         
-        /* [핵심] 카드 스타일 재정비 (회색 박스 제거 & 터치 효과) */
         .card { 
-            /* 여백 줄이고 깔끔하게 */
-            padding: 22px 25px; 
-            display: flex; flex-direction: column; gap: 10px; 
-            transition: all 0.2s ease; /* 빠른 반응 */
-            background: var(--glass-bg); 
-            backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            padding: 22px 25px; display: flex; flex-direction: column; gap: 10px; 
+            transition: all 0.2s ease;
+            background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
             border: 1px solid var(--glass-border); 
-            width: 100%; box-sizing: border-box;
-            border-radius: 24px;
-            position: relative;
-            user-select: none; /* 텍스트 선택 방지 */
+            width: 100%; box-sizing: border-box; border-radius: 24px; position: relative; user-select: none;
         }
-        
-        /* [수정] 터치 시 눌림 효과 + 배경 페이드 */
-        .card:active { 
-            transform: scale(0.97); /* 살짝 꾹 눌림 */
-            background: rgba(99, 102, 241, 0.08); /* 연한 보라색 페이드 */
-            border-color: var(--accent-color);
-        }
+        .card:active { transform: scale(0.97); background: rgba(99, 102, 241, 0.08); border-color: var(--accent-color); }
 
-        /* [NEW] 점 3개 메뉴 버튼 스타일 */
         .card-menu-btn {
             position: absolute; top: 15px; right: 15px;
             background: transparent; border: none;
             color: var(--text-secondary); padding: 8px;
             cursor: pointer; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            z-index: 10; /* 카드 내용보다 위에 */
+            z-index: 10;
         }
         .card-menu-btn:hover, .card-menu-btn:active { background: rgba(0,0,0,0.05); color: var(--text-primary); }
 
-        .card-header { display: flex; justify-content: space-between; align-items: center; padding-right: 30px; /* 메뉴 버튼 공간 확보 */ }
+        .card-header { display: flex; justify-content: space-between; align-items: center; padding-right: 30px; }
         .category-badge { font-size: 11px; padding: 6px 10px; border-radius: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .cat-ai { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
         .cat-startup { background: rgba(16, 185, 129, 0.1); color: #10b981; }
@@ -219,7 +215,12 @@
         .cat-etc { background: rgba(107, 114, 128, 0.1); color: #6b7280; }
         .card-date { font-size: 12px; color: var(--text-secondary); }
         .card-memo { font-size: 16px; font-weight: 700; line-height: 1.4; color: var(--text-primary); pointer-events: none; }
-        .card-url { font-size: 13px; color: var(--accent-color); text-decoration: none; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: 0.8; margin-top: 4px; pointer-events: none; }
+        .card-url { 
+            font-size: 13px; color: var(--accent-color); text-decoration: none; 
+            display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; 
+            opacity: 0.8; margin-top: 4px; pointer-events: auto; /* 중요: 클릭 가능 */
+        }
+        .card-url:hover { opacity: 1; text-decoration: underline; }
         
         .btn-back { display: inline-flex; align-items: center; gap: 8px; background: transparent; border: none; padding: 10px 0; color: var(--text-secondary); cursor: pointer; font-weight: 600; font-size: 15px; margin-bottom: 20px; }
 
@@ -240,7 +241,6 @@
         .btn-delete { background: #ef4444; color: white; }
         .btn-save-key { background: var(--accent-color); color: white; width: 100%; }
 
-        /* [NEW] 액션 선택 팝업 (수정/삭제) */
         .action-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         .btn-action-edit { background: var(--accent-gradient); color: white; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 16px; cursor: pointer; }
         .btn-action-delete { background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 16px; cursor: pointer; }
@@ -256,9 +256,9 @@
         @media screen and (max-width: 768px) {
             .container { padding: 20px 15px; }
             .input-card { padding: 25px 20px; }
-            .input-row { flex-wrap: wrap; }
-            .custom-select-wrapper { width: 100%; margin-bottom: 12px; }
-            #inp-url { flex: 1; width: auto; }
+            .input-row { flex-wrap: wrap; gap: 10px; }
+            .custom-select-wrapper { width: 100%; flex-basis: 100%; margin-bottom: 0; }
+            #inp-url { flex: 1; width: auto; min-width: 0; }
             .search-box-container { margin-bottom: 30px; }
             .search-box { padding: 10px 20px; }
         }
@@ -423,11 +423,8 @@
 
         const settingsBtn = document.getElementById('btn-settings');
         function setSync(status) {
-            if(status==='ok') { 
-                settingsBtn.classList.remove('syncing'); 
-            } else { 
-                settingsBtn.classList.add('syncing'); 
-            }
+            if(status==='ok') { settingsBtn.classList.remove('syncing'); } 
+            else { settingsBtn.classList.add('syncing'); }
         }
 
         function hideSplash() {
@@ -621,7 +618,6 @@
                 if(!finalMemo && url) { finalMemo = url; finalUrl = ""; }
             }
             
-            // [자동삭제] 제목 앞의 (1) 같은 숫자 제거
             if(finalMemo) finalMemo = finalMemo.replace(/^\(\d+\)\s*/, '');
 
             const now = new Date();
@@ -645,7 +641,6 @@
                 });
                 await updateDoc(docRef, { items: newData });
                 setSync('ok');
-                // 완료 팝업 제거 (조용히 성공)
             } catch (e) { console.error(e); setSync('error'); }
         }
 
@@ -656,27 +651,51 @@
             hideSplash();
         }
 
-        // [핵심] 리스트 렌더링 수정: 스와이프 제거, 점 3개 메뉴 추가
+        // [핵심] 리스트 렌더링 수정: 애니메이션 효과 추가
         window.renderList = function() {
             const container = document.getElementById('list-container');
-            container.innerHTML = '';
+            container.innerHTML = ''; // 초기화
+            
             let filteredList = myData.filter(item => (item.memo+item.url+item.category).toLowerCase().includes(searchTerm));
-            if (searchTerm) { renderItems(filteredList, container); return; }
+            if (searchTerm) { 
+                renderItems(filteredList, container); 
+                return; 
+            }
+            
             if (currentSort === 'time') {
                 activeFolder = null;
                 filteredList.sort((a, b) => b.timestamp - a.timestamp);
                 renderItems(filteredList, container);
             } else if (currentSort === 'category') {
                 if (activeFolder) {
+                    // 폴더 상세 보기 (뒤로가기 버튼 + 목록)
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'scrap-list animate-enter'; // 애니메이션 추가
+                    
                     const backBtn = document.createElement('button');
                     backBtn.className = 'btn-back';
                     backBtn.innerHTML = `<span class="material-icons-round">arrow_back_ios_new</span> ${activeFolder}`;
                     backBtn.onclick = () => { activeFolder = null; renderList(); };
+                    
                     container.appendChild(backBtn);
+                    
                     const items = filteredList.filter(item => item.category === activeFolder).sort((a,b)=>b.timestamp-a.timestamp);
-                    renderItems(items, container);
+                    // 목록 그리기
+                    items.forEach(item => {
+                       // ... (카드 생성 로직은 renderItems와 동일하게 처리하거나 함수 재사용)
+                       // 여기서는 재사용을 위해 구조를 약간 수정하는 게 좋지만, 일단 직접 구현
+                       wrapper.appendChild(createCardElement(item));
+                    });
+                    
+                    if(items.length === 0) wrapper.innerHTML = `<div style="text-align:center; opacity:0.6; padding:40px;">비어있음</div>`;
+                    
+                    container.appendChild(wrapper);
+                    
                 } else {
-                    const grid = document.createElement('div'); grid.className = 'folder-grid';
+                    // 폴더 그리드 보기
+                    const grid = document.createElement('div'); 
+                    grid.className = 'folder-grid animate-enter'; // 애니메이션 추가
+                    
                     ['AI','창업','정보','일상','기타'].forEach(cat => {
                         const cnt = filteredList.filter(i => i.category === cat).length;
                         const el = document.createElement('div'); el.className = 'folder-item glass-panel';
@@ -689,32 +708,33 @@
             }
         };
 
-        function renderItems(list, container) {
-            const wrapper = document.createElement('div'); wrapper.className = 'scrap-list';
-            list.forEach(item => {
-                const el = document.createElement('div'); el.className = 'card';
-                let cls = 'cat-etc';
-                if(item.category==='AI') cls='cat-ai'; else if(item.category==='창업') cls='cat-startup'; else if(item.category==='정보') cls='cat-info'; else if(item.category==='일상') cls='cat-daily';
-                
-                // 점 3개 메뉴 버튼 추가
-                const menuBtnHtml = `<button class="card-menu-btn" onclick="openActionPopup(${item.id})"><span class="material-icons-round" style="font-size:20px;">more_vert</span></button>`;
-                
-                el.innerHTML = `${menuBtnHtml}<div class="card-header"><span class="category-badge ${cls}">${item.category}</span><span class="card-date">${item.date}</span></div><div class="card-memo">${item.memo}</div><a href="${item.url}" target="_blank" class="card-url">${item.url}</a>`;
-                
-                // 카드 전체 클릭 시 입체감 효과 (CSS :active가 처리하지만, URL 열기 등 필요시 여기서 처리)
-                el.onclick = (e) => {
-                    // 메뉴 버튼이나 링크가 아닐 때만 반응
-                    if(!e.target.closest('.card-menu-btn') && !e.target.closest('a')) {
-                        // 필요시 여기에 클릭 동작 추가 (예: 상세 보기)
-                    }
-                };
+        // 카드 생성 로직 분리 (중복 방지)
+        function createCardElement(item) {
+            const el = document.createElement('div'); el.className = 'card';
+            let cls = 'cat-etc';
+            if(item.category==='AI') cls='cat-ai'; else if(item.category==='창업') cls='cat-startup'; else if(item.category==='정보') cls='cat-info'; else if(item.category==='일상') cls='cat-daily';
+            
+            const menuBtnHtml = `<button class="card-menu-btn" onclick="openActionPopup(${item.id})"><span class="material-icons-round" style="font-size:20px;">more_vert</span></button>`;
+            
+            el.innerHTML = `${menuBtnHtml}<div class="card-header"><span class="category-badge ${cls}">${item.category}</span><span class="card-date">${item.date}</span></div><div class="card-memo">${item.memo}</div><a href="${item.url}" target="_blank" class="card-url">${item.url}</a>`;
+            
+            el.onclick = (e) => {
+                if(!e.target.closest('.card-menu-btn') && !e.target.closest('a')) {
+                    if(item.url) window.open(item.url, '_blank');
+                }
+            };
+            return el;
+        }
 
-                wrapper.appendChild(el);
+        function renderItems(list, container) {
+            const wrapper = document.createElement('div'); wrapper.className = 'scrap-list animate-enter'; // 애니메이션 추가
+            if(list.length === 0) wrapper.innerHTML = `<div style="text-align:center; opacity:0.6; padding:40px;">비어있음</div>`;
+            list.forEach(item => {
+                wrapper.appendChild(createCardElement(item));
             });
             container.appendChild(wrapper);
         }
 
-        // [NEW] 액션 팝업 로직
         window.openActionPopup = function(id) {
             currentActionItem = myData.find(i => i.id === id);
             if(currentActionItem) {
@@ -749,7 +769,6 @@
             btn.textContent = "수정 완료";
             btn.classList.add('update-mode');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            // 수정 시작 알림 제거 (조용히 모드 전환)
         }
 
         let itemToDelete = null;
