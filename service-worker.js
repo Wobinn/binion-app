@@ -2,7 +2,8 @@ const CACHE_NAME = 'binion-v1';
 const ASSETS = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './icon-512.jpg'
 ];
 
 self.addEventListener('install', (event) => {
@@ -17,9 +18,5 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.method === 'GET') {
-    event.respondWith(
-      fetch(event.request).catch(() => caches.match(event.request))
-    );
-  }
+  // 기본 패치 전략
 });
