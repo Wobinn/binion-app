@@ -27,6 +27,7 @@
             --sync-active: #6366f1;
             --dropdown-hover: rgba(99, 102, 241, 0.08);
             --splash-bg: #fcfdff;
+            --error-color: #ef4444; /* 경고 색상 */
         }
 
         [data-theme="dark"] {
@@ -56,6 +57,14 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .animate-enter { animation: fadeInUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+
+        /* [NEW] 입력 유도 흔들림 애니메이션 */
+        @keyframes shakeInput {
+            0%, 100% { transform: translateX(0); border-color: var(--error-color); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        .shake-warning { animation: shakeInput 0.4s ease-in-out; border-color: var(--error-color) !important; }
 
         #custom-splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -110,6 +119,7 @@
         .input-card { padding: 35px; margin-bottom: 50px; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 50; }
         .input-row { display: flex; gap: 12px; align-items: center; }
         
+        /* [수정] 공유 모드 UI 개선 */
         #share-mode-ui {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-image); z-index: 9999;
@@ -117,14 +127,12 @@
         }
         .share-card { width: 100%; max-width: 360px; padding: 40px; text-align: center; display: flex; flex-direction: column; gap: 20px; }
         .share-title { font-size: 28px; font-weight: 800; margin: 0; background: var(--logo-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .share-question { font-size: 17px; font-weight: 600; color: var(--text-primary); margin: 0; opacity: 0.9; }
-        .share-preview { font-size: 14px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; background: rgba(0,0,0,0.03); padding: 10px 14px; border-radius: 12px; }
         
         .share-memo-input {
             width: 100%; padding: 16px; border: 1px solid var(--glass-border); border-radius: 16px; 
             font-size: 16px; font-family: var(--font-family); box-sizing: border-box; 
             background: rgba(0,0,0,0.03); color: var(--text-primary); outline: none;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, transform 0.2s;
         }
         [data-theme="dark"] .share-memo-input { background: rgba(255,255,255,0.05); }
         .share-memo-input:focus { border-color: var(--accent-color); }
@@ -152,12 +160,11 @@
         .btn-add:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(99, 102, 241, 0.4); }
         .btn-add.update-mode { background: linear-gradient(135deg, #10b981, #34d399); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25); }
 
-        /* [수정] 카테고리 색상 개편 */
-        .cat-music { background: rgba(244, 63, 94, 0.1); color: #f43f5e; } /* 음악 (Rose) */
-        .cat-plan { background: rgba(59, 130, 246, 0.1); color: #3b82f6; } /* 기획 (Blue) */
-        .cat-info { background: rgba(245, 158, 11, 0.1); color: #f59e0b; } /* 정보 (Amber) */
-        .cat-hobby { background: rgba(16, 185, 129, 0.1); color: #10b981; } /* 취미 (Emerald) */
-        .cat-etc { background: rgba(107, 114, 128, 0.1); color: #6b7280; } /* 기타 (Gray) */
+        .cat-music { background: rgba(244, 63, 94, 0.1); color: #f43f5e; }
+        .cat-plan { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .cat-info { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .cat-hobby { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .cat-etc { background: rgba(107, 114, 128, 0.1); color: #6b7280; }
 
         .folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; margin-top: 30px; }
         .folder-item { padding: 30px 20px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: transform 0.2s, box-shadow 0.2s; }
@@ -231,11 +238,11 @@
             <h1 class="share-title">Binion</h1>
             <p class="share-question" style="margin-bottom:5px;">스크랩 저장</p>
             
-            <input type="text" id="share-memo-input" class="share-memo-input" placeholder="메모를 입력하세요 (선택)">
+            <input type="text" id="share-memo-input" class="share-memo-input" placeholder="메모를 입력하세요">
             
             <div class="custom-select-wrapper full-width">
                 <div class="custom-select-trigger" id="share-category-trigger">
-                    <span id="share-selected-value">카테고리 선택 (저장)</span>
+                    <span id="share-selected-value">카테고리 선택</span>
                     <span class="material-icons-round">expand_more</span>
                 </div>
                 <div class="custom-options" id="share-category-options">
@@ -422,12 +429,11 @@
                     document.getElementById('main-app').style.display = 'none';
                     document.getElementById('share-mode-ui').style.display = 'flex';
                     
-                    // [핵심] 인스타그램 대응: 제목이 URL과 같으면 메모 칸을 비워줌
-                    // 유튜브처럼 제목이 제대로 오면 그대로 입력창에 채움
+                    // [핵심] 메모 자동 채움 & 빈칸 처리
                     if (shareMemo === shareUrl) {
-                        document.getElementById('share-memo-input').value = "";
+                        document.getElementById('share-memo-input').value = ""; // 인스타: 빈칸 (입력 유도)
                     } else {
-                        document.getElementById('share-memo-input').value = shareMemo;
+                        document.getElementById('share-memo-input').value = shareMemo; // 유튜브: 채움 (즉시 저장 가능)
                     }
                 } else {
                     document.getElementById('main-app').style.display = 'block';
@@ -439,6 +445,41 @@
                 document.getElementById('share-mode-ui').style.display = 'none';
             }
         });
+
+        // [핵심] 공유 카테고리 트리거 설정
+        const setupShareDropdown = () => {
+            const trg = document.getElementById('share-category-trigger');
+            const opts = document.getElementById('share-category-options');
+            const memoInput = document.getElementById('share-memo-input');
+
+            trg.onclick = (e) => {
+                e.stopPropagation();
+                
+                // [강제 입력 유도] 메모가 비어있으면 흔들림 효과 & 드롭다운 안 열림
+                if (!memoInput.value.trim()) {
+                    memoInput.classList.remove('shake-warning'); // 애니메이션 리셋
+                    void memoInput.offsetWidth; // 리플로우 강제
+                    memoInput.classList.add('shake-warning');
+                    memoInput.focus();
+                    return;
+                }
+                
+                opts.classList.toggle('open'); 
+            };
+
+            opts.querySelectorAll('.custom-option').forEach(o => {
+                o.onclick = () => {
+                    shareCategory = o.dataset.value;
+                    opts.classList.remove('open');
+                    saveFromShareMode(); // 카테고리 선택 시 바로 저장
+                };
+            });
+            
+            document.addEventListener('click', (e) => { 
+                if(!trg.contains(e.target) && !opts.contains(e.target)) opts.classList.remove('open'); 
+            });
+        };
+        setupShareDropdown();
 
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'hidden') {
@@ -556,6 +597,7 @@
         window.closePopup = function(id) { document.getElementById(id).classList.remove('show'); setTimeout(()=>document.getElementById(id).style.display='none', 200); };
 
         const setupDropdown = (triggerId, optionsId, inputId, displayId, isShare) => {
+            if(isShare) return; // 공유 팝업은 별도 처리
             const trg = document.getElementById(triggerId);
             const opts = document.getElementById(optionsId);
             trg.onclick = (e) => { e.stopPropagation(); opts.classList.toggle('open'); };
@@ -563,22 +605,15 @@
                 o.onclick = () => {
                     const v = o.dataset.value;
                     document.getElementById(displayId).textContent = v;
-                    if(isShare) {
-                        shareCategory = v;
-                        opts.classList.remove('open');
-                        saveFromShareMode(); 
-                    } else {
-                        document.getElementById(inputId).value = v;
-                        updateDropdownSelection(v);
-                        opts.classList.remove('open');
-                    }
+                    document.getElementById(inputId).value = v;
+                    updateDropdownSelection(v);
+                    opts.classList.remove('open');
                 };
             });
             document.addEventListener('click', (e) => { if(!trg.contains(e.target) && !opts.contains(e.target)) opts.classList.remove('open'); });
         };
 
         setupDropdown('category-trigger', 'category-options', 'inp-category', 'selected-value', false);
-        setupDropdown('share-category-trigger', 'share-category-options', null, 'share-selected-value', true);
 
         window.handleItemSubmit = async function() {
             const category = document.getElementById('inp-category').value;
@@ -600,9 +635,10 @@
         window.saveFromShareMode = async function() {
             const cat = shareCategory || "기타";
             const inputMemo = document.getElementById('share-memo-input').value;
-            const finalShareMemo = inputMemo.trim() ? inputMemo : shareMemo;
+            // 빈칸이면 저장 안 함 (안전장치 2중 확인)
+            if (!inputMemo.trim()) return;
 
-            await saveToFirebase(cat, shareUrl, finalShareMemo);
+            await saveToFirebase(cat, shareUrl, inputMemo);
             
             window.close();
             if (window.history.length > 1) { window.history.back(); } 
