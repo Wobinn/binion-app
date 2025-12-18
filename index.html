@@ -23,8 +23,8 @@
             --logo-gradient: linear-gradient(to right, #6366f1, #a5b4fc);
             --toggle-bg: rgba(200, 200, 200, 0.2);
             --toggle-indicator: #ffffff;
-            --sync-color: #9ca3af; /* 회색 (로딩중) */
-            --sync-active: #6366f1; /* 보라색 (완료) */
+            --sync-color: #9ca3af;
+            --sync-active: #6366f1;
             --dropdown-hover: rgba(99, 102, 241, 0.08);
             --splash-bg: #fcfdff;
         }
@@ -49,7 +49,6 @@
             --splash-bg: #0f1117;
         }
 
-        /* [수정] 터치 하이라이트(파란 박스) 전역 제거 */
         * { -webkit-tap-highlight-color: transparent; outline: none; }
 
         #custom-splash {
@@ -81,16 +80,15 @@
 
         .header-actions { display: flex; align-items: center; gap: 12px; }
         
-        /* [수정] 톱니바퀴 아이콘 (동기화 상태 표시용) */
         .icon-btn {
             background: var(--toggle-bg); border: 1px solid var(--glass-border); border-radius: 50%; width: 40px; height: 40px;
             display: flex; align-items: center; justify-content: center; cursor: pointer; 
-            color: var(--sync-active); /* 기본: 완료 상태(보라색) */
+            color: var(--sync-active); 
             transition: all 0.3s;
         }
         .icon-btn.syncing {
-            color: var(--sync-color); /* 로딩 중: 회색 */
-            transform: rotate(180deg); /* 회전 효과 */
+            color: var(--sync-color); 
+            transform: rotate(180deg); 
             opacity: 0.7;
         }
         .icon-btn:hover { background: var(--glass-bg); transform: scale(1.1); }
@@ -167,7 +165,6 @@
         .btn-ai.loading { animation: pulse-ai 1.5s infinite; opacity: 0.8; pointer-events: none; }
         @keyframes pulse-ai { 0% { transform: scale(0.95); } 50% { transform: scale(1.05); } 100% { transform: scale(0.95); } }
 
-        /* [수정] 버튼 스타일: 일반 모드(저장)와 수정 모드 구분 */
         .btn-add {
             background: var(--accent-gradient); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 700; cursor: pointer; font-size: 16px; margin-top: 10px; transition: all 0.3s; box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
         }
@@ -182,33 +179,35 @@
         
         .scrap-list { display: flex; flex-direction: column; gap: 20px; width:100%; overflow:hidden; }
         
-        /* [수정] 카드 스타일: 스와이프 및 상호작용용 */
+        /* [수정] 카드 스타일: 회색 박스 제거 및 감도 조절 */
         .card-wrapper {
-            position: relative; width: 100%; overflow: hidden; /* 스와이프를 위해 감싸는 컨테이너 */
+            position: relative; width: 100%; overflow: hidden;
             border-radius: 24px; box-shadow: var(--glass-shadow);
+            background: transparent; /* 배경 투명으로 수정 */
         }
         .card { 
+            /* 여백 줄이고 꽉 차게 수정 */
             padding: 25px; display: flex; flex-direction: column; gap: 12px; 
             transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
             background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
             border: 1px solid var(--glass-border); 
             width: 100%; box-sizing: border-box;
-            touch-action: pan-y; /* 수직 스크롤은 허용, 수평은 JS로 제어 */
+            touch-action: pan-y;
             position: relative; z-index: 2;
-            user-select: none; /* 텍스트 선택 방지 (스와이프 시) */
+            user-select: none;
+            border-radius: 24px; /* 카드 자체 둥글게 */
         }
         .card:active { transform: scale(0.98); background: rgba(255,255,255,0.9); }
         [data-theme="dark"] .card:active { background: rgba(30,30,40,0.9); }
 
-        /* 스와이프 배경 (수정/삭제 아이콘) */
         .swipe-actions {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: space-between; align-items: center;
             padding: 0 30px; box-sizing: border-box; z-index: 1;
             font-weight: 700; color: white; border-radius: 24px;
         }
-        .action-left { opacity: 0; transition: opacity 0.2s; color: #10b981; } /* 수정 (초록) */
-        .action-right { opacity: 0; transition: opacity 0.2s; color: #ef4444; } /* 삭제 (빨강) */
+        .action-left { opacity: 0; transition: opacity 0.2s; color: #10b981; } 
+        .action-right { opacity: 0; transition: opacity 0.2s; color: #ef4444; }
 
         .card-header { display: flex; justify-content: space-between; align-items: center; }
         .category-badge { font-size: 11px; padding: 6px 10px; border-radius: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -401,11 +400,8 @@
         let shareUrl = "";
         let shareMemo = "";
         let shareCategory = "";
-        
-        // [수정] 편집 모드 변수
         let editModeId = null; 
 
-        // [수정] 동기화 상태 -> 톱니바퀴 색상 변경
         const settingsBtn = document.getElementById('btn-settings');
         function setSync(status) {
             if(status==='ok') { 
@@ -569,21 +565,17 @@
         setupDropdown('category-trigger', 'category-options', 'inp-category', 'selected-value', false);
         setupDropdown('share-category-trigger', 'share-category-options', null, 'share-selected-value', true);
 
-        // [수정] 통합 저장/수정 핸들러
         window.handleItemSubmit = async function() {
             const category = document.getElementById('inp-category').value;
             let rawUrlInput = document.getElementById('inp-url').value;
             let memoInput = document.getElementById('inp-memo').value;
 
             if(editModeId) {
-                // 수정 모드
                 await updateItemInFirebase(editModeId, category, rawUrlInput, memoInput);
-                // 모드 초기화
                 editModeId = null;
                 document.getElementById('btn-submit').textContent = "스크랩 저장";
                 document.getElementById('btn-submit').classList.remove('update-mode');
             } else {
-                // 신규 저장
                 await saveToFirebase(category, rawUrlInput, memoInput);
             }
             document.getElementById('inp-url').value = '';
@@ -610,7 +602,6 @@
                 if(!finalMemo && url) { finalMemo = url; finalUrl = ""; }
             }
             
-            // [수정] 제목 앞의 (1) 같은 숫자 제거
             if(finalMemo) finalMemo = finalMemo.replace(/^\(\d+\)\s*/, '');
 
             const now = new Date();
@@ -622,9 +613,9 @@
             catch (e) { console.error(e); setSync('error'); }
         }
 
-        // [수정] 아이템 수정 함수
         async function updateItemInFirebase(id, cat, url, memo) {
             setSync('loading');
+            if(memo) memo = memo.replace(/^\(\d+\)\s*/, ''); // 수정 시에도 적용
             try {
                 const newData = myData.map(item => {
                     if(item.id === id) {
@@ -645,9 +636,6 @@
             hideSplash();
         }
 
-        // ----------------------------------------------------
-        // [List Rendering + Swipe Logic]
-        // ----------------------------------------------------
         window.renderList = function() {
             const container = document.getElementById('list-container');
             container.innerHTML = '';
@@ -683,11 +671,8 @@
         function renderItems(list, container) {
             const wrapper = document.createElement('div'); wrapper.className = 'scrap-list';
             list.forEach(item => {
-                // 스와이프를 위한 구조: wrapper > background(actions) + card
                 const itemWrapper = document.createElement('div');
                 itemWrapper.className = 'card-wrapper';
-                
-                // 배경 (편집/삭제 아이콘)
                 const actions = document.createElement('div');
                 actions.className = 'swipe-actions';
                 actions.innerHTML = `<span class="material-icons-round action-left">edit</span><span class="material-icons-round action-right">delete</span>`;
@@ -698,7 +683,6 @@
                 if(item.category==='AI') cls='cat-ai'; else if(item.category==='창업') cls='cat-startup'; else if(item.category==='정보') cls='cat-info'; else if(item.category==='일상') cls='cat-daily';
                 el.innerHTML = `<div class="card-header"><span class="category-badge ${cls}">${item.category}</span><span class="card-date">${item.date}</span></div><div class="card-memo">${item.memo}</div><a href="${item.url}" target="_blank" class="card-url">${item.url}</a>`;
                 
-                // [스와이프 로직]
                 let startX = 0;
                 let currentTranslate = 0;
                 let isDragging = false;
@@ -706,56 +690,49 @@
                 el.addEventListener('touchstart', (e) => {
                     startX = e.touches[0].clientX;
                     isDragging = true;
-                    el.style.transition = 'none'; // 드래그 중에는 애니메이션 끔
+                    el.style.transition = 'none';
                 });
 
                 el.addEventListener('touchmove', (e) => {
                     if (!isDragging) return;
                     const x = e.touches[0].clientX;
                     const diff = x - startX;
-                    
-                    // 수직 스크롤 방해 최소화 (수평 이동이 더 클 때만 작동)
                     if (Math.abs(diff) < 10) return; 
 
                     currentTranslate = diff;
                     el.style.transform = `translateX(${diff}px)`;
 
-                    // 아이콘 투명도 조절
                     const leftIcon = actions.querySelector('.action-left');
                     const rightIcon = actions.querySelector('.action-right');
                     
-                    if (diff > 0) { // 오른쪽으로 (수정)
+                    if (diff > 0) { 
                         leftIcon.style.opacity = Math.min(diff / 100, 1);
                         rightIcon.style.opacity = 0;
-                        itemWrapper.style.background = `rgba(16, 185, 129, ${Math.min(diff/300, 0.2)})`; // 초록 배경
-                    } else { // 왼쪽으로 (삭제)
+                        itemWrapper.style.background = `rgba(16, 185, 129, ${Math.min(diff/300, 0.2)})`; 
+                    } else { 
                         rightIcon.style.opacity = Math.min(Math.abs(diff) / 100, 1);
                         leftIcon.style.opacity = 0;
-                        itemWrapper.style.background = `rgba(239, 68, 68, ${Math.min(Math.abs(diff)/300, 0.2)})`; // 빨강 배경
+                        itemWrapper.style.background = `rgba(239, 68, 68, ${Math.min(Math.abs(diff)/300, 0.2)})`; 
                     }
                 });
 
                 el.addEventListener('touchend', () => {
                     isDragging = false;
-                    el.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)'; // 복귀 애니메이션
+                    el.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
                     
-                    // 감도: 100px 이상 밀었을 때 동작
-                    if (currentTranslate > 100) {
-                        // 수정 트리거
+                    // [핵심] 감도 조절: 120px 이상 확실히 밀어야 작동
+                    if (currentTranslate > 120) {
                         triggerEdit(item);
-                        el.style.transform = 'translateX(0)'; // 제자리 복귀
-                    } else if (currentTranslate < -100) {
-                        // 삭제 트리거
+                        el.style.transform = 'translateX(0)';
+                    } else if (currentTranslate < -120) {
                         itemToDelete = item; 
                         document.getElementById('delete-popup').classList.add('show'); 
                         document.getElementById('delete-popup').style.display='flex';
-                        el.style.transform = 'translateX(0)'; // 제자리 복귀
+                        el.style.transform = 'translateX(0)';
                     } else {
-                        // 취소 (제자리로 튕김)
                         el.style.transform = 'translateX(0)';
                     }
                     
-                    // 아이콘 숨김
                     setTimeout(() => {
                         actions.querySelector('.action-left').style.opacity = 0;
                         actions.querySelector('.action-right').style.opacity = 0;
@@ -763,10 +740,8 @@
                     }, 300);
                 });
 
-                // 클릭 시 URL 이동 (스와이프가 아닐 때만)
                 el.onclick = (e) => {
                     if (Math.abs(currentTranslate) < 5 && e.target.tagName !== 'A') {
-                        // 카드 클릭 시 URL 열기 (선택사항, 필요 없으면 제거)
                         if(item.url) window.open(item.url, '_blank');
                     }
                 };
@@ -777,7 +752,6 @@
             container.appendChild(wrapper);
         }
 
-        // [수정] 수정 모드 진입 함수
         function triggerEdit(item) {
             editModeId = item.id;
             document.getElementById('inp-category').value = item.category;
@@ -786,12 +760,9 @@
             document.getElementById('inp-url').value = item.url;
             document.getElementById('inp-memo').value = item.memo;
             
-            // 버튼 상태 변경
             const btn = document.getElementById('btn-submit');
             btn.textContent = "수정 완료";
             btn.classList.add('update-mode');
-            
-            // 상단으로 스크롤
             window.scrollTo({ top: 0, behavior: 'smooth' });
             showCustomAlert("내용을 수정한 뒤 '수정 완료'를 누르세요.", "수정 모드");
         }
