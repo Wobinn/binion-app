@@ -94,7 +94,7 @@
         .input-card { padding: 35px; margin-bottom: 50px; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 50; }
         .input-row { display: flex; gap: 12px; align-items: center; }
         
-        /* 공유 모드 전용 UI (간소화됨) */
+        /* 공유 모드 전용 UI */
         #share-mode-ui {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-image); z-index: 9999;
@@ -102,15 +102,15 @@
         }
         .share-card {
             width: 100%; max-width: 360px; padding: 40px; text-align: center;
-            display: flex; flex-direction: column; gap: 20px;
+            display: flex; flex-direction: column; gap: 30px; /* 간격 조정 */
         }
-        .share-title { font-size: 24px; font-weight: 800; margin: 0; background: var(--logo-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .share-question { font-size: 16px; font-weight: 600; color: var(--text-primary); margin: 0; opacity: 0.9; }
+        .share-title { font-size: 28px; font-weight: 800; margin: 0; background: var(--logo-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .share-question { font-size: 17px; font-weight: 600; color: var(--text-primary); margin: 0; opacity: 0.9; }
         .share-preview { 
-            font-size: 13px; color: var(--text-secondary); 
+            font-size: 14px; color: var(--text-secondary); 
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
             max-width: 100%; background: rgba(0,0,0,0.03); 
-            padding: 8px 12px; border-radius: 8px;
+            padding: 10px 14px; border-radius: 12px;
         }
 
         /* 커스텀 드롭다운 */
@@ -128,7 +128,7 @@
             border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s; z-index: 100; overflow: hidden; text-align: left;
         }
         .custom-options.open { opacity: 1; visibility: visible; transform: translateY(0); }
-        .custom-option { padding: 14px 20px; cursor: pointer; font-size: 15px; font-weight: 500; transition: all 0.2s; border-bottom: 1px solid rgba(0,0,0,0.03); }
+        .custom-option { padding: 16px 20px; cursor: pointer; font-size: 16px; font-weight: 500; transition: all 0.2s; border-bottom: 1px solid rgba(0,0,0,0.03); }
         .custom-option:hover { background: var(--dropdown-hover); color: var(--accent-color); padding-left: 25px; }
         .custom-option.selected { background: var(--accent-gradient); color: white; }
 
@@ -186,15 +186,6 @@
         .btn-delete { background: #ef4444; color: white; }
         .btn-save-key { background: var(--accent-color); color: white; width: 100%; }
 
-        /* 토스트 메시지 스타일 */
-        .toast {
-            visibility: hidden; min-width: 250px; background-color: var(--text-primary); color: var(--bg-color);
-            text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 10000;
-            left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 15px; font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.3s, bottom 0.3s;
-        }
-        .toast.show { visibility: visible; opacity: 1; bottom: 50px; }
-
     </style>
 </head>
 <body>
@@ -217,7 +208,7 @@
                     <div class="custom-option" data-value="기타">기타</div>
                 </div>
             </div>
-            </div>
+        </div>
     </div>
 
     <div class="container main-ui" id="main-app">
@@ -301,8 +292,6 @@
         </div>
     </div>
 
-    <div id="toast" class="toast">저장되었습니다!</div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, doc, onSnapshot, updateDoc, arrayUnion, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
@@ -328,6 +317,7 @@
         let activeFolder = null;
         let searchTerm = '';
         
+        // 공유 모드 변수
         let shareUrl = "";
         let shareMemo = "";
         let shareCategory = "";
@@ -353,17 +343,17 @@
         });
 
         // ----------------------------------------------------
-        // [AI Logic]
+        // [AI Logic] (공유 모드에선 사용 안 함)
         // ----------------------------------------------------
-        window.analyzeContent = async function(isAuto = false) {
+        window.analyzeContent = async function() {
             const apiKey = localStorage.getItem('gemini_key');
             if (!apiKey) {
-                if(!isAuto) { alert("먼저 우측 상단 설정(⚙️)에서 API 키를 입력해주세요!"); openKeyPopup(); }
+                alert("먼저 우측 상단 설정(⚙️)에서 API 키를 입력해주세요!"); openKeyPopup();
                 return; 
             }
 
-            const rawInput = shareUrl || document.getElementById('inp-url').value;
-            const currentMemo = shareMemo || document.getElementById('inp-memo').value;
+            const rawInput = document.getElementById('inp-url').value;
+            const currentMemo = document.getElementById('inp-memo').value;
             
             if (!rawInput.trim() && !currentMemo.trim()) return;
 
@@ -378,13 +368,7 @@
             }
 
             const finalContext = (contextText + " " + currentMemo).trim();
-            
-            // 공유 모드 로딩 표시
-            if(document.getElementById('share-mode-ui').style.display === 'flex') {
-                document.getElementById('share-selected-value').textContent = "AI 분석 중...";
-            } else {
-                document.querySelector('.btn-ai').classList.add('loading');
-            }
+            document.querySelector('.btn-ai').classList.add('loading');
 
             const prompt = `
                 Analyze the following data and return a JSON object.
@@ -407,26 +391,13 @@
                 const result = JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim());
 
                 if (result.category) {
-                    // 메인 UI 업데이트
                     document.getElementById('inp-category').value = result.category;
                     document.getElementById('selected-value').textContent = result.category;
-                    // 공유 UI 업데이트
-                    shareCategory = result.category;
-                    document.getElementById('share-selected-value').textContent = result.category; // 분석 완료 시 표시
                     updateDropdownSelection(result.category);
                 }
                 
-                if (cleanUrl) {
-                    if(document.getElementById('share-mode-ui').style.display !== 'flex') document.getElementById('inp-url').value = cleanUrl;
-                    else shareUrl = cleanUrl;
-                }
-                if (result.summary) {
-                    if(document.getElementById('share-mode-ui').style.display !== 'flex') document.getElementById('inp-memo').value = result.summary;
-                    else {
-                        shareMemo = result.summary;
-                        document.getElementById('share-preview-text').textContent = result.summary;
-                    }
-                }
+                if (cleanUrl) document.getElementById('inp-url').value = cleanUrl;
+                if (result.summary) document.getElementById('inp-memo').value = result.summary;
 
             } catch (e) { console.error(e); } finally {
                 document.querySelector('.btn-ai').classList.remove('loading');
@@ -466,10 +437,10 @@
                     document.getElementById(displayId).textContent = v;
                     
                     if(isShare) {
-                        // [핵심 수정] 공유 모드에서 선택 시 즉시 저장 및 종료
+                        // [핵심 로직] 카테고리 선택 즉시 저장 및 종료
                         shareCategory = v;
                         opts.classList.remove('open');
-                        saveFromShareMode(); // 바로 저장 함수 실행
+                        saveFromShareMode(); 
                     } else {
                         document.getElementById(inputId).value = v;
                         updateDropdownSelection(v);
@@ -496,27 +467,17 @@
         };
 
         window.saveFromShareMode = async function() {
-            // 공유 모드 저장 로직
+            // 공유 모드: 즉시 저장 후 종료
             const cat = shareCategory || "기타"; 
             await saveToFirebase(cat, shareUrl, shareMemo);
             
-            // 토스트 메시지 표시
-            showToast("저장되었습니다!");
+            // 토스트나 알림 없이 즉시 닫기 시도
+            // (브라우저 정책에 따라 window.close()가 제한될 수 있으나 PWA에서는 일반적으로 작동함)
+            window.close(); 
             
-            // 잠시 후 창 닫기 시도 (PWA/브라우저 정책에 따라 다를 수 있음)
-            setTimeout(() => {
-                window.close(); // 안드로이드 PWA에서 닫기 시도
-                // 안 닫히면 메인 화면으로 전환
-                exitShareMode(); 
-            }, 1000);
+            // 혹시 안 닫히면 메인 화면으로 돌아가기
+            setTimeout(() => { exitShareMode(); }, 300);
         };
-
-        function showToast(msg) {
-            const t = document.getElementById("toast");
-            t.textContent = msg;
-            t.classList.add("show");
-            setTimeout(() => { t.classList.remove("show"); }, 2000);
-        }
 
         async function saveToFirebase(cat, url, memo) {
             if (!url && !memo) return;
@@ -546,7 +507,7 @@
         }
 
         // ----------------------------------------------------
-        // [List Rendering]
+        // [List Rendering & Delete]
         // ----------------------------------------------------
         window.renderList = function() {
             const container = document.getElementById('list-container');
@@ -614,7 +575,7 @@
         };
 
         // ----------------------------------------------------
-        // [Init] 공유 감지 (버그 수정: URL 정리 포함)
+        // [Init] 공유 감지 & URL 클린업
         // ----------------------------------------------------
         document.addEventListener('DOMContentLoaded', () => {
             const p = new URL(window.location.href);
@@ -631,10 +592,10 @@
                 shareMemo = ti || (!u && t ? t : "");
                 document.getElementById('share-preview-text').textContent = shareMemo || shareUrl;
 
-                // [중요] URL 파라미터 청소 (새로고침 시 공유 모드 재진입 방지)
+                // [중요] URL 파라미터를 즉시 지워서 새로고침 시 다시 공유모드 되는 것 방지
                 window.history.replaceState({}, document.title, window.location.pathname);
-
-                setTimeout(() => analyzeContent(true), 500);
+                
+                // AI 실행 안 함 (사용자 요청)
             }
         });
     </script>
